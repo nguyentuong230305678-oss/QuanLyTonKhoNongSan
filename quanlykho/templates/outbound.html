@@ -1,0 +1,236 @@
+{% extends 'base.html' %}
+
+{% block title %}Xuất Kho Thông Minh (FEFO) | Nông Sản Xanh{% endblock %}
+{% block nav_outbound %}active{% endblock %}
+{% block breadcrumb %}Xuất kho theo nguyên tắc FEFO{% endblock %}
+
+{% block content %}
+<div class="page-heading" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+    <div>
+        <p class="eyebrow">XUẤT HÀNG THEO HẠN SỬ DỤNG</p>
+        <h1 style="font-size: 20px; font-weight: 800; margin: 0 0 4px;">Lập Phiếu Xuất Kho</h1>
+        <p style="margin: 0; color: #6b7280; font-size: 11px;">Hệ thống tự động đề xuất xuất các lô hàng có hạn sử dụng gần nhất trước (First Expired, First Out)</p>
+    </div>
+</div>
+
+<div class="content-grid operation-layout" style="grid-template-columns: minmax(0, 1.4fr) minmax(320px, 1fr);">
+    <!-- FORM XUẤT KHO FEFO -->
+    <div class="card">
+        <h2 class="card-title" style="color: #2563eb;">📤 Lập Phiếu Xuất Kho Phân Phối / Bán Sỉ</h2>
+
+        <form method="POST" id="issueForm">
+            {% csrf_token %}
+            <div class="form-section-heading">
+                <strong>Thông tin phiếu xuất</strong>
+                <span>Khách hàng nhận và mặt hàng cần xuất</span>
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label class="form-label">Khách hàng / Đối tác mua sỉ (*)</label>
+                    <select name="partner_id" class="form-select" required>
+                        <option value="">-- Chọn Khách hàng nhận hàng --</option>
+                        {% for pt in partners %}
+                            <option value="{{ pt.id }}">{{ pt.name }} ({{ pt.address }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nông sản cần xuất (*)</label>
+                    <select name="product_id" id="product_id" class="form-select" required onchange="resetFefo()">
+                        <option value="">-- Chọn Nông sản --</option>
+                        {% for p in products %}
+                            <option value="{{ p.id }}">{{ p.code }} - {{ p.name }} (Tồn: {{ p.total_stock }} {{ p.unit }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label class="form-label">Tổng số lượng cần xuất (*)</label>
+                    <input type="number" step="0.1" name="total_qty" id="total_qty" class="form-control" placeholder="Ví dụ: 150" required oninput="resetFefo()">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Đơn giá bán sỉ (VNĐ / ĐVT)</label>
+                    <input type="number" name="unit_price" class="form-control" value="0">
+                </div>
+            </div>
+
+            <!-- NÚT GỢI Ý FEFO -->
+            <div style="margin: 10px 0 20px;">
+                <button type="button" class="btn btn-primary" onclick="requestFefoSuggestion()">
+                    <span>💡</span> Gợi ý Lô xuất theo FEFO (Hạn gần nhất)
+                </button>
+                <span id="loading_msg" style="display: none; margin-left: 10px; font-size: 11px; color: #6b7280;">
+                    Đang tính toán phân bổ lô cận hạn...
+                </span>
+            </div>
+
+            <!-- VÙNG HIỂN THỊ KẾT QUẢ ĐỀ XUẤT FEFO -->
+            <div id="fefo_result_area" style="display: none;">
+                <div style="background: #eff6ff; border: 1px solid #bfdbfe; padding: 12px; border-radius: 8px; margin-bottom: 15px;">
+                    <strong style="color: #1e40af; font-size: 12px;">📊 Bảng phân bổ lô cận hạn theo thuật toán FEFO:</strong>
+                    <p style="margin: 3px 0 0; font-size: 10px; color: #3b82f6;">
+                        * Thủ kho có thể điều chỉnh số lượng xuất thực tế của từng lô nếu cần thiết.
+                    </p>
+                </div>
+
+                <table class="data-table" id="allocation_table">
+                    <thead>
+                        <tr>
+                            <th>Mã Lô hàng</th>
+                            <th>Vị trí kho</th>
+                            <th>Hạn sử dụng</th>
+                            <th>Tồn hiện tại</th>
+                            <th style="width: 140px; color: #2563eb;">Số lượng xuất từ lô</th>
+                        </tr>
+                    </thead>
+                    <tbody id="allocation_body">
+                        <!-- Render dynamic qua JS -->
+                    </tbody>
+                </table>
+
+                <div class="form-group" style="margin-top: 15px;">
+                    <label class="form-label">Ghi chú phiếu xuất</label>
+                    <input type="text" name="note" class="form-control" placeholder="Ghi chú vận chuyển, xe giao hàng...">
+                </div>
+
+                <div style="text-align: right; margin-top: 15px;">
+                    <button type="submit" class="btn btn-success" style="padding: 11px 24px;">
+                        ✔ Xác nhận Xuất kho & Trừ tồn CSDL
+                    </button>
+                </div>
+            </div>
+
+            <div id="fefo_error_box" class="alert-box error" style="display: none; margin-top: 15px;">
+                <span id="fefo_error_text"></span>
+            </div>
+        </form>
+    </div>
+
+    <!-- CỘT PHẢI: NGUYÊN TẮC FEFO -->
+    <div>
+        <div class="card" style="border-left: 4px solid #2563eb;">
+            <h3 class="card-title" style="color: #1d4ed8;">⚖ Nguyên tắc Xuất kho FEFO</h3>
+            <ul style="font-size: 11px; color: #4b5563; padding-left: 18px; line-height: 1.8; margin: 0;">
+                <li><strong>FEFO (First Expired, First Out)</strong>: Nông sản hết hạn trước bắt buộc phải xuất trước để giảm tỷ lệ hư hỏng.</li>
+                <li>Nếu nông sản không đủ số lượng tồn: Hệ thống chặn ngay lập tức và trả về cảnh báo lỗi.</li>
+                <li>Giao dịch xuất kho được thực thi trong một <strong>Database Transaction</strong> đảm bảo toàn vẹn dữ liệu.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- LỊCH SỬ PHIẾU XUẤT -->
+<div class="card" style="margin-top: 10px;">
+    <h3 class="card-title">Lịch sử Phiếu Xuất Kho Đã Thực Hiện</h3>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Mã Phiếu Xuất</th>
+                <th>Khách hàng nhận</th>
+                <th>Thời gian xuất</th>
+                <th>Người tạo</th>
+                <th>Tổng tiền</th>
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in recent_issues %}
+            <tr>
+                <td><strong style="color: #2563eb;">{{ i.code }}</strong></td>
+                <td>{{ i.partner.name }}</td>
+                <td>{{ i.created_at|date:"d/m/Y H:i" }}</td>
+                <td><small>{{ i.created_by.username|default:"Hệ thống" }}</small></td>
+                <td><strong>{{ i.total_amount|floatformat:0 }} đ</strong></td>
+                <td><span class="badge badge-safe">Đã xuất kho</span></td>
+                <td>
+                    <a href="{% url 'issue_detail' i.id %}" class="btn btn-sm btn-outline">
+                        📄 In Phiếu PDF
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" style="text-align: center; color: #9ca3af; padding: 20px;">
+                    Chưa có phiếu xuất kho nào.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function resetFefo() {
+        document.getElementById('fefo_result_area').style.display = 'none';
+        document.getElementById('fefo_error_box').style.display = 'none';
+    }
+
+    async function requestFefoSuggestion() {
+        const pId = document.getElementById('product_id').value;
+        const qty = parseFloat(document.getElementById('total_qty').value);
+        const errBox = document.getElementById('fefo_error_box');
+        const errText = document.getElementById('fefo_error_text');
+        const resArea = document.getElementById('fefo_result_area');
+        const loadMsg = document.getElementById('loading_msg');
+        const tbody = document.getElementById('allocation_body');
+
+        if (!pId || !qty || qty <= 0) {
+            alert('Vui lòng chọn Nông sản và nhập số lượng xuất hợp lệ!');
+            return;
+        }
+
+        errBox.style.display = 'none';
+        resArea.style.display = 'none';
+        loadMsg.style.display = 'inline';
+
+        try {
+            const resp = await fetch(`{% url 'outbound' %}?action=fefo_suggest&product_id=${pId}&quantity=${qty}`, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            });
+            const data = await resp.json();
+            loadMsg.style.display = 'none';
+
+            if (!resp.ok || !data.success) {
+                errText.innerText = data.message || 'Lỗi khi tính toán phân bổ FEFO!';
+                errBox.style.display = 'flex';
+                return;
+            }
+
+            // Render danh sách lô được FEFO đề xuất
+            tbody.innerHTML = '';
+            data.allocations.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <strong>${item.batch_code}</strong>
+                        <input type="hidden" name="batch_id[]" value="${item.batch_id}">
+                    </td>
+                    <td>${item.location}</td>
+                    <td>
+                        <strong style="color: ${item.days_left <= 7 ? '#dc2626' : '#258451'};">${item.exp_date}</strong>
+                        <div style="font-size: 9px; color: #6b7280;">(Còn ${item.days_left} ngày)</div>
+                    </td>
+                    <td>${item.qty_current}</td>
+                    <td>
+                        <input type="number" step="0.1" name="take_qty[]" class="form-control" 
+                               value="${item.take_qty}" max="${item.qty_current}" min="0" required 
+                               style="font-weight: 700; color: #2563eb;">
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            resArea.style.display = 'block';
+        } catch (e) {
+            loadMsg.style.display = 'none';
+            errText.innerText = 'Lỗi kết nối máy chủ: ' + e;
+            errBox.style.display = 'flex';
+        }
+    }
+</script>
+{% endblock %}

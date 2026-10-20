@@ -1,0 +1,109 @@
+ 
+TRƯỜNG ĐẠI HỌC TÀI NGUYÊN VÀ MÔI TRƯỜNG
+ THÀNH PHỐ HỒ CHÍ MINH
+KHOA CÔNG NGHỆ THÔNG TIN
+BÁO CÁO THỰC HÀNH
+                      
+             Sinh viên thực hiện: Nguyễn Ngọc Cát Tường (1250080226)
+Lớp       :   12_ĐH_CNTT5 
+Khoá     :   2025 – 2026 
+Giảng viên hướng dẫn : TH.S HÀ THANH VÂN
+Mục lục
+Bài tập thực hành số 1: Khảo sát dữ liệu3
+1.1.Khảo sát dữ liệu không gian tỉnh Đồng Tháp: ….Ditagis/DongThap3
+1. Dân số (Danso.shp)3
+2. Đất ngập nước (Datnn.shp):3
+3. Đường giao thông chính (dgtchinh.shp)3
+4. Độ cao (Docao.shp)3
+5. Đơn vị hành chánh (dvhc.shp)4
+6. Huyện (huyen.shp)4
+7. Nhà máy (nhamay.shp)4
+8. Quan trắc không khí (qtkk.shp)5
+9. Quan trắc nước (Qtnn.shp)5
+10. Rừng (rung.shp)6
+11. Sử dụng đất (sdd.shp)7
+12. Sông hồ (sho.shp)8
+13. Thổ nhưỡng (tnhuong.shp)9
+14. Trường học (Trhoc.shp)10
+1.2 Khảo sát dữ liệu thuộc tính tỉnh Đồng Tháp: ….Ditagis/Bang/11
+1. Datnn.dbf11
+2. Rung.dbf12
+3. Qlmt.dbf12
+4. Nmay.dbf12
+5. Qtkk_98k.dbf12
+6. Qtn_98k.dbf13
+Bài tập thực hành số 2: Truy vấn dữ liệu14
+2.1 Truy vấn thuộc tính : Selection/Selected By Atributes14
+1. Tìm các thành phố của quốc gia bắt đầu bằng chữ V?14
+2. Tìm thủ đô của nước Mỹ, Nhật, Úc, Italy?14
+"CAPITAL" = 'Y' AND "COUNTRY" IN( 'US', 'Japan', 'Italy', 'Australia' )14
+3. Tìm các thành phố có dân số > 10.000.00014
+"POPULATION" >1000000014
+4. Tim hệ thống sông Mekong?15
+"NAME" = 'Mekong'15
+5. Tìm hệ thống sông "Mississippi"15
+"NAME" = ' Mississippi'15
+6. Tìm nước Việt Nam, Thai Lan?15
+"CNTRY_NAME" = 'Vietnam' OR "CNTRY_NAME" = 'Thailand'15
+2.1 Truy vấn không gian : Selection/Selected By Location16
+Câu 1 Sông Mekong đi qua bao nhiêu nước16
+2.Hệ thống sông  "Mississippi" đi qua bao nhiêu nước? Kết quả: 117
+3.Nước Thái Lan có bao nhiêu thành phố18
+4.Tìm các thành phố cách sông 1km19
+Bài tập thực hành số 3: Xử lý dữ liệu không gian cơ bản21
+Bài tập thực hành số 4: Tạo vùng bao.22
+Bài tập thực hành số 5: Hiển thị dữ liệu.22
+Bài tập 1: Tạo bản đồ Sdd.shp có giá trị duy nhất.22
+Bài tập 2: Tạo bản đồ dân số tỉnh đồng tháp theo thang màu có giá trị tăng dần Sdd23
+Bài tập 3: Tạo bản đồ kí hiệu tăng dần theo những giá trị tăng dần của điểm cao độ khu vực tỉnh Đồng Tháp.25
+Bài tập 4: Tạo bản đồ mật độ điểm để thể hiện mật độ dân số của từng vùng hành chính huyện/thị xã trong địa bàn tỉnh Đồng Tháp.26
+Bài tập 5: Tạo bản đồ biểu đồ thể hiện số lượng nam, nữ trong tổng số dân của tỉnh Đồng Tháp.27
+Bài tập thực hành số 1: Khảo sát dữ liệu
+1.1.Khảo sát dữ liệu không gian tỉnh Đồng Tháp: ….Ditagis/DongThap
+Dân số (Danso.shp)
+Đất ngập nước (Datnn.shp): 
+Đường giao thông chính (dgtchinh.shp)
+Độ cao (Docao.shp)
+Đơn vị hành chánh (dvhc.shp)
+Huyện (huyen.shp)
+Nhà máy (nhamay.shp)
+Quan trắc không khí (qtkk.shp)
+Quan trắc nước (Qtnn.shp)
+Rừng (rung.shp)
+Sử dụng đất (sdd.shp)
+Sông hồ (sho.shp)
+Thổ nhưỡng (tnhuong.shp)
+Trường học (Trhoc.shp)
+1.2 Khảo sát dữ liệu thuộc tính tỉnh Đồng Tháp: ….Ditagis/Bang/
+Datnn.dbf
+Rung.dbf
+Qlmt.dbf
+Nmay.dbf
+Qtkk_98k.dbf
+Qtn_98k.dbf
+Bài tập thực hành số 2: Truy vấn dữ liệu
+2.1 Truy vấn thuộc tính : Selection/Selected By Atributes 
+Tìm các thành phố của quốc gia bắt đầu bằng chữ V?
+Tìm thủ đô của nước Mỹ, Nhật, Úc, Italy?
+"CAPITAL" = 'Y' AND "COUNTRY" IN( 'US', 'Japan', 'Italy', 'Australia' )
+Tìm các thành phố có dân số > 10.000.000
+"POPULATION" >10000000
+Tim hệ thống sông Mekong?
+"NAME" = 'Mekong'
+Tìm hệ thống sông "Mississippi"
+"NAME" = ' Mississippi'
+Tìm nước Việt Nam, Thai Lan?
+"CNTRY_NAME" = 'Vietnam' OR "CNTRY_NAME" = 'Thailand'
+2.1 Truy vấn không gian : Selection/Selected By Location
+Câu 1 Sông Mekong đi qua bao nhiêu nước
+2.Hệ thống sông  "Mississippi" đi qua bao nhiêu nước? Kết quả: 1
+3.Nước Thái Lan có bao nhiêu thành phố
+4.Tìm các thành phố cách sông 1km
+Bài tập thực hành số 3: Xử lý dữ liệu không gian cơ bản
+Bài tập thực hành số 4: Tạo vùng bao.
+Bài tập thực hành số 5: Hiển thị dữ liệu.
+Bài tập 1: Tạo bản đồ Sdd.shp có giá trị duy nhất.
+Bài tập 2: Tạo bản đồ dân số tỉnh đồng tháp theo thang màu có giá trị tăng dần Sdd
+Bài tập 3: Tạo bản đồ kí hiệu tăng dần theo những giá trị tăng dần của điểm cao độ khu vực tỉnh Đồng Tháp. 
+Bài tập 4: Tạo bản đồ mật độ điểm để thể hiện mật độ dân số của từng vùng hành chính huyện/thị xã trong địa bàn tỉnh Đồng Tháp.
+Bài tập 5: Tạo bản đồ biểu đồ thể hiện số lượng nam, nữ trong tổng số dân của tỉnh Đồng Tháp. 

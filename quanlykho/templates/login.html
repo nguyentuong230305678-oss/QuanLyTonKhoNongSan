@@ -1,0 +1,461 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Đăng nhập | Hệ thống Quản lý Tồn kho Nông sản</title>
+    <link rel="stylesheet" href="{% static 'core/dashboard.css' %}">
+    <style>
+        :root {
+            --primary: #258451;
+            --primary-dark: #1b6840;
+            --primary-light: #eaf5ed;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+            background: #f4f6f4;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-main);
+        }
+
+        .auth-wrapper {
+            width: 100%;
+            max-width: 980px;
+            margin: 24px;
+            background: #ffffff;
+            border-radius: 18px;
+            box-shadow: 0 20px 40px -15px rgba(27, 104, 64, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1.15fr 1fr;
+            min-height: 580px;
+        }
+
+        /* CỘT TRÁI: BRANDING & GIỚI THIỆU HỆ THỐNG */
+        .auth-banner {
+            background: linear-gradient(145deg, #185a37 0%, #258451 100%);
+            color: #ffffff;
+            padding: 48px 42px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .auth-banner::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top right, rgba(255,255,255,0.12) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .banner-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            width: 44px;
+            height: 44px;
+            object-fit: contain;
+        }
+
+        .brand-text h2 {
+            margin: 0;
+            font-size: 17px;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+        }
+
+        .brand-text p {
+            margin: 2px 0 0;
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            opacity: 0.85;
+            font-weight: 700;
+        }
+
+        .banner-content {
+            margin: 40px 0;
+        }
+
+        .banner-content h1 {
+            font-size: 26px;
+            font-weight: 800;
+            line-height: 1.35;
+            margin: 0 0 16px;
+            letter-spacing: -0.5px;
+        }
+
+        .banner-content p {
+            font-size: 13px;
+            line-height: 1.6;
+            margin: 0 0 24px;
+            opacity: 0.9;
+        }
+
+        .feature-list {
+            display: grid;
+            gap: 14px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .feature-badge {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.16);
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            font-size: 11px;
+            margin-top: 1px;
+        }
+
+        .banner-footer {
+            font-size: 11px;
+            opacity: 0.75;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            padding-top: 16px;
+        }
+
+        /* CỘT PHẢI: FORM ĐĂNG NHẬP */
+        .auth-form-side {
+            padding: 48px 42px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: #ffffff;
+        }
+
+        .form-header {
+            margin-bottom: 28px;
+        }
+
+        .form-header h3 {
+            margin: 0 0 6px;
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.4px;
+            color: var(--text-main);
+        }
+
+        .form-header p {
+            margin: 0;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 7px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .input-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            color: #9ca3af;
+            font-size: 15px;
+            pointer-events: none;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 14px 12px 40px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            font-size: 13px;
+            color: var(--text-main);
+            background: #fafafa;
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            background: #ffffff;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 132, 81, 0.15);
+        }
+
+        .toggle-pwd {
+            position: absolute;
+            right: 12px;
+            background: transparent;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            font-size: 13px;
+            padding: 4px;
+        }
+
+        .toggle-pwd:hover {
+            color: #4b5563;
+        }
+
+        .form-options {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            margin-bottom: 24px;
+            color: var(--text-muted);
+        }
+
+        .form-options label {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            cursor: pointer;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: #ffffff;
+            border: none;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.1s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-submit:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-submit:active {
+            transform: scale(0.99);
+        }
+
+        .alert-message {
+            padding: 11px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .alert-message.error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+
+        .alert-message.info {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+        }
+
+        .public-portal-link {
+            margin-top: 28px;
+            padding-top: 20px;
+            border-top: 1px solid #f3f4f6;
+            text-align: center;
+        }
+
+        .public-portal-link a {
+            color: var(--primary);
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .public-portal-link a:hover {
+            text-decoration: underline;
+            color: var(--primary-dark);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .auth-wrapper {
+                grid-template-columns: 1fr;
+                margin: 12px;
+            }
+            .auth-banner {
+                padding: 32px 24px;
+            }
+            .auth-form-side {
+                padding: 36px 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-wrapper">
+        <!-- CỘT 1: THƯƠNG HIỆU & GIỚI THIỆU NGHIỆP VỤ HỆ THỐNG -->
+        <div class="auth-banner">
+            <div class="banner-brand">
+                <img class="brand-icon" src="{% static 'core/logo.svg' %}" alt="">
+                <div class="brand-text">
+                    <h2>Nông Sản Xanh</h2>
+                    <p>Hệ Thống Quản Lý Kho Tiêu Chuẩn</p>
+                </div>
+            </div>
+
+            <div class="banner-content">
+                <h1>Quản lý tồn kho nông sản chuyên nghiệp & thông minh</h1>
+                <p>Nền tảng kiểm soát toàn diện quy trình nhập – xuất – tồn nông sản theo mẻ/lô, nhiệt độ lưu kho và hạn sử dụng.</p>
+
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <div class="feature-badge">✓</div>
+                        <div><strong>Quản lý theo Lô hàng (Batch/Lot):</strong> Tự động định danh mã lô, ngày sản xuất và hạn dùng chính xác.</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-badge">✓</div>
+                        <div><strong>Chiến lược xuất kho FEFO:</strong> Ưu tiên xuất các lô cận hạn sử dụng nhất nhằm giảm thiểu tỷ lệ hao hụt.</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-badge">✓</div>
+                        <div><strong>Phân quyền & Kiểm soát nghiêm ngặt:</strong> Tách biệt vai trò Quản trị viên, Thủ kho và Nhân viên vận hành.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="banner-footer">
+                Trường Đại học Tài nguyên và Môi trường TP.HCM &bull; Khoa CNTT
+            </div>
+        </div>
+
+        <!-- CỘT 2: FORM ĐĂNG NHẬP CHUYÊN NGHIỆP -->
+        <div class="auth-form-side">
+            <div class="form-header">
+                <h3>Đăng nhập hệ thống</h3>
+                <p>Vui lòng nhập tên tài khoản và mật khẩu được cấp để tiếp tục</p>
+            </div>
+
+            <!-- THÔNG BÁO LỖI NẾU CÓ -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert-message {% if message.tags == 'error' %}error{% else %}info{% endif %}">
+                        <span>{{ message }}</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST" action="{% url 'login' %}">
+                {% csrf_token %}
+                {% if next %}
+                    <input type="hidden" name="next" value="{{ next }}">
+                {% endif %}
+
+                <div class="form-group">
+                    <label class="form-label" for="username">
+                        <span>Tài khoản đăng nhập</span>
+                    </label>
+                    <div class="input-group">
+                        <span class="input-icon">👤</span>
+                        <input type="text" name="username" id="username" class="form-control" 
+                               placeholder="Nhập tên tài khoản..." required autofocus autocomplete="username">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 7px;">
+                        <label class="form-label" for="password" style="margin-bottom: 0;">
+                            <span>Mật khẩu</span>
+                        </label>
+                        <a href="{% url 'forgot_password' %}" style="font-size: 11px; color: var(--primary); text-decoration: none; font-weight: 600;">
+                            Quên mật khẩu?
+                        </a>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-icon">🔒</span>
+                        <input type="password" name="password" id="password" class="form-control" 
+                               placeholder="Nhập mật khẩu..." required autocomplete="current-password">
+                        <button type="button" class="toggle-pwd" onclick="togglePasswordVisibility()" aria-label="Hiện mật khẩu">
+                            👁
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <label>
+                        <input type="checkbox" name="remember_me" checked>
+                        <span>Ghi nhớ phiên đăng nhập</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <span>Đăng nhập vào hệ thống</span>
+                    <span>→</span>
+                </button>
+            </form>
+
+            <div style="margin-top: 18px; text-align: center; font-size: 12px; color: #6b7280;">
+                Bạn là Khách hàng / Đại lý sỉ mới? 
+                <a href="{% url 'register' %}" style="color: var(--primary); font-weight: 700; text-decoration: none;">
+                    Đăng ký tài khoản ngay
+                </a>
+            </div>
+
+            <div class="public-portal-link">
+                <a href="{% url 'store' %}">
+                    <span>🛒</span>
+                    <span>Vào Cửa Hàng Nông Sản (Đặt mua & Gợi ý theo mùa) →</span>
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function togglePasswordVisibility() {
+            const pwd = document.getElementById('password');
+            if (pwd.type === 'password') {
+                pwd.type = 'text';
+            } else {
+                pwd.type = 'password';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Danh Mục Nông Sản An Toàn | Nông Sản Xanh</title>
+    <link rel="stylesheet" href="{% static 'core/dashboard.css' %}">
+    <style>
+        body { background: #f8faf8; }
+        .public-header {
+            background: #fff;
+            border-bottom: 1px solid #edf0ed;
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .hero {
+            background: linear-gradient(135deg, #1b6840 0%, #258451 100%);
+            color: #fff;
+            padding: 50px 40px;
+            text-align: center;
+        }
+        .hero h1 { font-size: 28px; font-weight: 800; margin: 0 0 10px; }
+        .hero p { font-size: 13px; opacity: 0.9; margin: 0 auto; max-width: 600px; line-height: 1.6; }
+        .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+        .cat-title { font-size: 16px; font-weight: 800; color: #1b6840; margin: 30px 0 15px; border-bottom: 2px solid #e2ebe4; padding-bottom: 8px; }
+        .prod-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+        .prod-card {
+            background: #fff;
+            border: 1px solid #edf0ed;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03);
+            transition: transform 0.2s;
+        }
+        .prod-card:hover { transform: translateY(-3px); }
+        .prod-code { font-size: 10px; font-weight: 700; color: #258451; background: #eaf5ed; padding: 3px 8px; border-radius: 6px; display: inline-block; }
+        .prod-name { font-size: 15px; font-weight: 800; color: #1f2937; margin: 10px 0 6px; }
+        .prod-info { font-size: 11px; color: #4b5563; line-height: 1.7; }
+        .btn-login {
+            background: #258451;
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <header class="public-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <img class="brand-mark" src="{% static 'core/logo.svg' %}" alt="">
+            <div>
+                <strong style="font-size: 15px; color: #1b6840;">Nông Sản Xanh</strong>
+                <div style="font-size: 9px; color: #6b7280; font-weight: 700; letter-spacing: 1px;">KHO NÔNG SẢN TIÊU CHUẨN VIỆT NAM</div>
+            </div>
+        </div>
+
+        <div>
+            <a href="{% url 'login' %}" class="btn-login">🔑 Cổng Đăng Nhập Quản Lý Kho</a>
+        </div>
+    </header>
+
+    <div class="hero">
+        <h1>NÔNG SẢN TƯƠI SẠCH & BẢO QUẢN TIÊU CHUẨN</h1>
+        <p>Hệ thống kho nông sản kiểm soát nghiêm ngặt theo Lô hàng (Batch No), quy chuẩn nhiệt độ bảo quản và hạn sử dụng tươi mới mỗi ngày.</p>
+    </div>
+
+    <div class="container">
+        {% for cat in categories %}
+            <div class="cat-title">
+                🌿 {{ cat.name }} 
+                <small style="font-size: 11px; font-weight: 500; color: #6b7280; margin-left: 10px;">
+                    ({{ cat.get_storage_type_display }})
+                </small>
+            </div>
+
+            <div class="prod-grid">
+                {% for p in cat.products.all %}
+                <div class="prod-card">
+                    <span class="prod-code">{{ p.code }}</span>
+                    <div class="prod-name">{{ p.name }}</div>
+                    <div class="prod-info">
+                        <div>Đơn vị tính: <strong>{{ p.unit }}</strong></div>
+                        <div>Nhiệt độ bảo quản: <strong>{{ p.storage_temp }}</strong></div>
+                        <div>Tiêu chuẩn xuất: <strong>{{ p.get_strategy_display }}</strong></div>
+                    </div>
+                    <div style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed #edf0ed; display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 13px; font-weight: 800; color: #258451;">
+                            {{ p.price|floatformat:0 }} đ / {{ p.unit }}
+                        </span>
+                        <span style="font-size: 10px; color: #166534; background: #dcfce7; padding: 2px 6px; border-radius: 4px;">Sẵn sàng cung ứng</span>
+                    </div>
+                </div>
+                {% empty %}
+                <div style="color: #9ca3af; font-size: 12px;">Đang cập nhật danh mục nông sản...</div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+
+        <div style="background: #fff; border: 1px solid #edf0ed; border-radius: 12px; padding: 30px; margin-top: 40px; text-align: center;">
+            <h3 style="margin: 0 0 8px; color: #1f2937;">Bạn là Đối tác Siêu thị / Cửa hàng bán lẻ cần nhập sỉ?</h3>
+            <p style="margin: 0 0 15px; font-size: 12px; color: #6b7280;">Vui lòng liên hệ bộ phận kinh doanh kho nông sản để được tư vấn chính sách giao hàng và báo giá tốt nhất.</p>
+            <div style="font-size: 13px; font-weight: 700; color: #258451;">📞 Hotline: 0901.234.567 | ✉ Email: khonongsanxanh@gmail.com</div>
+        </div>
+    </div>
+</body>
+</html>

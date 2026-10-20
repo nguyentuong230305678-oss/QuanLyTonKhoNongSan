@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}Quản lý Đơn Đặt Hàng | Nông Sản Xanh{% endblock %}
+{% block breadcrumb %}Danh sách Đơn Đặt Hàng Nông Sản{% endblock %}
+
+{% block content %}
+<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+    <div>
+        <h1 style="font-size: 20px; font-weight: 800; margin: 0 0 4px;">Đơn Đặt Hàng Khách Hàng</h1>
+        <p style="margin: 0; color: #6b7280; font-size: 11px;">Quản lý các đơn hàng khách vừa đặt trực tuyến từ website, chuẩn bị xuất kho giao hàng</p>
+    </div>
+    <a href="{% url 'store' %}" class="btn btn-outline" target="_blank">
+        <span>🛒</span> Mở Cửa Hàng Đặt Mua ↗
+    </a>
+</div>
+
+<div class="card">
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Mã Đơn Hàng</th>
+                <th>Khách hàng</th>
+                <th>Số điện thoại</th>
+                <th>Địa chỉ giao</th>
+                <th>Nông sản đặt mua</th>
+                <th>Tổng tiền</th>
+                <th>Thanh toán</th>
+                <th>Trạng thái đơn</th>
+                <th style="min-width: 140px; text-align: center;">Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for o in orders %}
+            <tr>
+                <td><strong style="color: #258451;">{{ o.code }}</strong></td>
+                <td>
+                    <strong>{{ o.customer_name }}</strong>
+                    {% if o.customer %}
+                        <div style="font-size: 9px; color: #6b7280;">TK: {{ o.customer.username }}</div>
+                    {% endif %}
+                </td>
+                <td>{{ o.customer_phone }}</td>
+                <td><small>{{ o.shipping_address|truncatechars:35 }}</small></td>
+                <td>
+                    {% for item in o.items.all %}
+                        <div>
+                            <strong>{{ item.product.name }}</strong>: {{ item.quantity }} {{ item.product.unit }}
+                        </div>
+                    {% endfor %}
+                </td>
+                <td><strong style="color: #dc2626;">{{ o.total_amount|floatformat:0 }} đ</strong></td>
+                <td>
+                    <span class="badge" style="background: #e0f2fe; color: #0284c7;">
+                        {{ o.get_payment_method_display|truncatechars:20 }}
+                    </span>
+                    <div style="font-size: 9px; color: #166534; margin-top: 2px;">{{ o.get_payment_status_display }}</div>
+                </td>
+                <td>
+                    {% if o.order_status == 'NEW' %}
+                        <span class="badge badge-warning">★ Đơn mới</span>
+                    {% elif o.order_status == 'PROCESSING' %}
+                        <span class="badge badge-manager">Đang xử lý</span>
+                    {% else %}
+                        <span class="badge badge-safe">Hoàn tất</span>
+                    {% endif %}
+                </td>
+                <td style="text-align: center;">
+                    {% if role != 'CUSTOMER' %}
+                        {% with first_item=o.items.first %}
+                            {% if first_item %}
+                                <a href="{% url 'outbound' %}?product_id={{ first_item.product.id }}&quantity={{ first_item.quantity }}" 
+                                   class="btn btn-sm btn-success" style="padding: 6px 12px; font-weight: 700; white-space: nowrap;">
+                                    ⚡ Xuất kho FEFO
+                                </a>
+                            {% endif %}
+                        {% endwith %}
+                    {% else %}
+                        <span style="font-size: 11px; color: #6b7280;">Đang chuẩn bị</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="9" style="text-align: center; color: #9ca3af; padding: 25px;">
+                    Chưa có đơn đặt hàng nào. Khách hàng có thể vào <a href="{% url 'store' %}">Cửa Hàng</a> để đặt mua nông sản!
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

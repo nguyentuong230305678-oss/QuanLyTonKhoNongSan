@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>In Tem Nhãn Lô Hàng: {{ batch.batch_code }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f4f6;
+            margin: 0;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .label-container {
+            width: 380px;
+            background: #fff;
+            border: 2px dashed #374151;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .label-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #258451;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+        }
+        .brand-name {
+            font-size: 14px;
+            font-weight: 800;
+            color: #258451;
+        }
+        .batch-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #6b7280;
+        }
+        .product-name {
+            font-size: 16px;
+            font-weight: 800;
+            color: #111827;
+            margin: 6px 0;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            font-size: 11px;
+            margin-bottom: 12px;
+            color: #374151;
+        }
+        .barcode-box {
+            text-align: center;
+            background: #fafafa;
+            border: 1px solid #e5e7eb;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+        .barcode-bars {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            height: 48px;
+            gap: 2px;
+            margin-bottom: 6px;
+        }
+        .barcode-bars div {
+            background: #000;
+            height: 100%;
+        }
+        .barcode-text {
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #000;
+        }
+        .btn-print {
+            margin-top: 20px;
+            padding: 10px 24px;
+            background: #258451;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        @media print {
+            body { background: #fff; padding: 0; }
+            .btn-print { display: none; }
+            .label-container { border: 1px solid #000; box-shadow: none; width: 100%; max-width: 360px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="label-container">
+        <div class="label-header">
+            <span class="brand-name">🌱 NÔNG SẢN XANH</span>
+            <span class="batch-title">TEM NHÃN ĐỊNH DANH LÔ</span>
+        </div>
+
+        <div class="product-name">{{ batch.product.name }}</div>
+
+        <div class="info-grid">
+            <div>Mã SP: <strong>{{ batch.product.code }}</strong></div>
+            <div>ĐVT: <strong>{{ batch.product.unit }}</strong></div>
+            <div>Ngày SX: <strong>{{ batch.mfg_date|date:"d/m/Y" }}</strong></div>
+            <div>Hạn dùng: <strong style="color: #dc2626;">{{ batch.exp_date|date:"d/m/Y" }}</strong></div>
+            <div>Số lượng: <strong>{{ batch.qty_current }} {{ batch.product.unit }}</strong></div>
+            <div>Vị trí: <strong>{{ batch.location|default:"Kho chung" }}</strong></div>
+        </div>
+
+        <!-- MÃ VẠCH CODE128 -->
+        <div class="barcode-box">
+            <div class="barcode-bars">
+                <div style="width: 2px;"></div>
+                <div style="width: 4px;"></div>
+                <div style="width: 1px;"></div>
+                <div style="width: 3px;"></div>
+                <div style="width: 2px;"></div>
+                <div style="width: 4px;"></div>
+                <div style="width: 1px;"></div>
+                <div style="width: 2px;"></div>
+                <div style="width: 3px;"></div>
+                <div style="width: 1px;"></div>
+                <div style="width: 4px;"></div>
+                <div style="width: 2px;"></div>
+                <div style="width: 3px;"></div>
+                <div style="width: 1px;"></div>
+                <div style="width: 2px;"></div>
+                <div style="width: 4px;"></div>
+                <div style="width: 1px;"></div>
+                <div style="width: 3px;"></div>
+                <div style="width: 2px;"></div>
+                <div style="width: 4px;"></div>
+                <div style="width: 1px;"></div>
+                <div style="width: 3px;"></div>
+                <div style="width: 2px;"></div>
+                <div style="width: 4px;"></div>
+            </div>
+            <div class="barcode-text">*{{ batch.batch_code }}*</div>
+        </div>
+    </div>
+
+    <button class="btn-print" onclick="window.print()">🖨 In Tem Nhãn Lô Này</button>
+</body>
+</html>

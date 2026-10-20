@@ -1,0 +1,435 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Thanh Toán Đơn Hàng #{{ order.code }} | Nông Sản Xanh</title>
+    <link rel="stylesheet" href="{% static 'core/dashboard.css' %}">
+    <style>
+        :root {
+            --primary: #258451;
+            --primary-dark: #1b6840;
+            --border: #e5e7eb;
+        }
+        body { background: #f4f6f4; margin: 0; font-family: 'Segoe UI', -apple-system, sans-serif; color: #1f2937; }
+        .payment-container { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
+        
+        /* THANH TIẾN TRÌNH 2 BƯỚC */
+        .checkout-steps {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #9ca3af;
+        }
+        .step-item.completed {
+            color: #166534;
+        }
+        .step-item.active {
+            color: var(--primary);
+        }
+        .step-num {
+            width: 26px; height: 26px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-size: 12px;
+            font-weight: 800;
+            background: #e5e7eb;
+            color: #4b5563;
+        }
+        .step-item.completed .step-num {
+            background: #dcfce7;
+            color: #15803d;
+        }
+        .step-item.active .step-num {
+            background: var(--primary);
+            color: #ffffff;
+        }
+        .step-divider {
+            width: 40px;
+            height: 2px;
+            background: #86efac;
+        }
+
+        .payment-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 24px; }
+        .box { background: #ffffff; border-radius: 14px; padding: 24px; border: 1px solid #edf0ed; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+        .box-title { font-size: 16px; font-weight: 800; color: #111827; margin: 0 0 16px; display: flex; align-items: center; gap: 8px; }
+
+        /* KHỐI QR */
+        .qr-card {
+            background: #fdfdfd;
+            border: 2px dashed #86efac;
+            border-radius: 14px;
+            padding: 20px;
+            text-align: center;
+        }
+        .qr-img {
+            width: 230px;
+            height: 230px;
+            object-fit: contain;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            background: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        .qr-amount-badge {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #b91c1c;
+            padding: 8px 14px;
+            border-radius: 8px;
+            margin: 12px 0;
+            display: inline-block;
+            font-size: 13px;
+        }
+        .qr-amount-badge strong {
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        /* CHI TIẾT TÀI KHOẢN */
+        .bank-info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 14px 0;
+            text-align: left;
+            font-size: 12px;
+            background: #f9fafb;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+        }
+        .bank-info-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .bank-info-table tr:last-child td { border-bottom: none; }
+        .copy-btn {
+            background: #eaf5ed;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            margin-left: 6px;
+        }
+        .copy-btn:hover { background: #dcfce7; }
+
+        .btn-confirm {
+            width: 100%;
+            background: var(--primary);
+            color: #fff;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 10px rgba(37, 132, 81, 0.25);
+        }
+        .btn-confirm:hover { background: var(--primary-dark); }
+
+        .btn-cod {
+            width: 100%;
+            background: #ffffff;
+            color: #374151;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .btn-cod:hover { background: #f9fafb; border-color: #9ca3af; }
+
+        .paid-card {
+            background: #f0fdf4;
+            border: 1px solid #86efac;
+            border-radius: 14px;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .paid-icon {
+            width: 64px; height: 64px;
+            border-radius: 50%;
+            background: #258451;
+            color: #ffffff;
+            display: grid;
+            place-items: center;
+            font-size: 32px;
+            margin: 0 auto 16px;
+        }
+
+        .cod-card {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 14px;
+            padding: 26px 20px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .payment-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-container">
+        <!-- HEADER ĐIỀU HƯỚNG -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <a href="{% url 'store' %}" style="text-decoration: none; color: var(--primary); font-size: 13px; font-weight: 700;">
+                ← Về Cửa hàng nông sản
+            </a>
+            <span style="font-size: 12px; font-weight: 700; color: #166534; background: #eaf5ed; padding: 4px 12px; border-radius: 20px;">
+                Đơn hàng: #{{ order.code }}
+            </span>
+        </div>
+
+        <!-- TIẾN TRÌNH THANH TOÁN 2 BƯỚC -->
+        <div class="checkout-steps">
+            <div class="step-item completed">
+                <span class="step-num">✓</span>
+                <span>1. Điền thông tin nhận hàng</span>
+            </div>
+            <div class="step-divider"></div>
+            <div class="step-item active">
+                <span class="step-num">2</span>
+                <span>2. Thanh toán đơn hàng (Mã VietQR / COD)</span>
+            </div>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div style="background: #eaf5ed; border: 1px solid #86efac; color: #166534; padding: 12px 16px; border-radius: 10px; margin-bottom: 20px; font-size: 13px; font-weight: 600;">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="payment-grid">
+            <!-- CỘT 1: VÙNG THANH TOÁN (MÃ VIETQR TỰ ĐỘNG KHỚP CHÍNH XÁC SỐ TIỀN) -->
+            <div class="box">
+                {% if order.payment_status == 'PAID' %}
+                    <!-- TRẠNG THÁI: ĐÃ THANH TOÁN THÀNH CÔNG -->
+                    <div class="paid-card">
+                        <div class="paid-icon">✓</div>
+                        <h2 style="margin: 0 0 10px; font-size: 20px; font-weight: 800; color: #166534;">
+                            Đã Xác Nhận Thanh Toán Thành Công!
+                        </h2>
+                        <p style="margin: 0 0 18px; font-size: 13px; color: #374151; line-height: 1.6;">
+                            Cảm ơn bạn đã thanh toán số tiền <strong style="color: #15803d; font-size: 15px;">{{ amount|floatformat:0 }} VNĐ</strong> qua VietQR.<br>
+                            Bộ phận thủ kho đã tiếp nhận và đang tiến hành soạn hàng xuất kho theo nguyên tắc <strong>FEFO</strong> (Hàng hạn sớm xuất trước).
+                        </p>
+                        <div style="display: flex; gap: 10px; justify-content: center;">
+                            <a href="{% url 'orders' %}" class="btn-confirm" style="width: auto; text-decoration: none; padding: 10px 20px;">
+                                📋 Xem Quản Lý Đơn Hàng Của Tôi
+                            </a>
+                            <a href="{% url 'store' %}" class="btn-cod" style="width: auto; margin-top: 0; text-decoration: none; padding: 10px 18px;">
+                                🌿 Tiếp tục mua sắm
+                            </a>
+                        </div>
+                    </div>
+
+                {% elif order.payment_method == 'COD' %}
+                    <!-- TRẠNG THÁI: THANH TOÁN TIỀN MẶT KHI NHẬN HÀNG (COD) -->
+                    <div class="cod-card">
+                        <div style="width: 56px; height: 56px; border-radius: 50%; background: #dbeafe; color: #1d4ed8; display: grid; place-items: center; font-size: 28px; margin: 0 auto 14px;">
+                            💵
+                        </div>
+                        <h2 style="margin: 0 0 10px; font-size: 18px; font-weight: 800; color: #1e40af;">
+                            Phương Thức: Thanh Toán Khi Nhận Hàng (COD)
+                        </h2>
+                        <p style="margin: 0 0 16px; font-size: 12px; color: #374151; line-height: 1.6;">
+                            Đơn hàng của quý khách đã được chuyển sang chế độ COD. Nhân viên giao hàng kho lạnh sẽ thu tiền mặt khi quý khách kiểm tra đúng số lượng và chất lượng nông sản.
+                        </p>
+                        <div style="background: #ffffff; padding: 12px; border-radius: 8px; border: 1px dashed #93c5fd; margin-bottom: 20px; font-size: 13px;">
+                            Số tiền cần chuẩn bị: <strong style="color: #b91c1c; font-size: 16px;">{{ amount|floatformat:0 }} VNĐ</strong>
+                        </div>
+
+                        <!-- LỰA CHỌN ĐỔI SANG QUÉT MÃ VIETQR NẾU MUỐN -->
+                        <form method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="switch_vietqr">
+                            <button type="submit" class="btn-confirm">
+                                💳 Đổi Sang Quét Mã VietQR Chuyển Khoản Ngay
+                            </button>
+                        </form>
+                    </div>
+
+                {% else %}
+                    <!-- TRẠNG THÁI CHỜ THANH TOÁN QUA VIETQR (LOGIC CHÍNH XÁC THEO YÊU CẦU) -->
+                    <h2 class="box-title">
+                        <span>💳 Bước 2: Quét Mã VietQR Tự Động</span>
+                    </h2>
+
+                    <div class="qr-card">
+                        <div style="font-size: 12px; font-weight: 700; color: #166534; margin-bottom: 6px;">
+                            📱 HỆ THỐNG VIETQR CHUẨN NAPAS 24/7
+                        </div>
+                        <p style="margin: 0 0 10px; font-size: 11px; color: #6b7280;">
+                            Mở ứng dụng ngân hàng bất kỳ (MBBank, Vietcombank, Techcombank, VPBank, MoMo...) và quét mã bên dưới:
+                        </p>
+
+                        <!-- MÃ QR ĐƯỢC SINH TỰ ĐỘNG KHỚP 100% SỐ TIỀN VÀ MÃ ĐƠN -->
+                        <img src="{{ qr_url }}" alt="Mã VietQR Đơn Hàng {{ order.code }}" class="qr-img">
+
+                        <div class="qr-amount-badge">
+                            Số tiền thanh toán: <strong>{{ amount|floatformat:0 }} VNĐ</strong>
+                            <div style="font-size: 10px; color: #15803d; margin-top: 2px;">
+                                ✓ Đã tự động điền đúng số tiền và nội dung đơn hàng
+                            </div>
+                        </div>
+
+                        <!-- THÔNG TIN CHUYỂN KHOẢN DỰ PHÒNG HOẶC COPY NHANH -->
+                        <table class="bank-info-table">
+                            <tr>
+                                <td style="color: #6b7280; width: 35%;">Ngân hàng:</td>
+                                <td><strong>MBBank (Ngân Hàng Quân Đội)</strong></td>
+                            </tr>
+                            <tr>
+                                <td style="color: #6b7280;">Số tài khoản:</td>
+                                <td>
+                                    <strong id="acc_no" style="font-size: 13px; color: #166534;">{{ account_no }}</strong>
+                                    <button type="button" class="copy-btn" onclick="copyText('{{ account_no }}', this)">Sao chép</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="color: #6b7280;">Chủ tài khoản:</td>
+                                <td><strong>{{ account_name }}</strong></td>
+                            </tr>
+                            <tr>
+                                <td style="color: #6b7280;">Số tiền:</td>
+                                <td><strong style="color: #dc2626;">{{ amount|floatformat:0 }} VNĐ</strong></td>
+                            </tr>
+                            <tr>
+                                <td style="color: #6b7280;">Nội dung CK:</td>
+                                <td>
+                                    <strong id="trans_info" style="color: #1f2937;">{{ add_info }}</strong>
+                                    <button type="button" class="copy-btn" onclick="copyText('{{ add_info }}', this)">Sao chép</button>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- NÚT XÁC NHẬN CHUYỂN KHOẢN -->
+                        <form method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="confirm_transfer">
+                            <button type="submit" class="btn-confirm">
+                                <span>✔ Tôi Đã Quét Mã & Chuyển Khoản Thành Công</span>
+                            </button>
+                        </form>
+
+                        <!-- HOẶC CHUYỂN SANG PHƯƠNG THỨC COD -->
+                        <form method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="switch_cod">
+                            <button type="submit" class="btn-cod">
+                                💵 Không muốn chuyển khoản? Đổi sang thanh toán khi nhận hàng (COD)
+                            </button>
+                        </form>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- CỘT 2: TÓM TẮT THÔNG TIN ĐƠN HÀNG VÀ NGƯỜI NHẬN -->
+            <div class="box" style="height: fit-content;">
+                <h2 class="box-title">📦 Thông Tin Đơn Đặt Hàng</h2>
+
+                <div style="background: #f9fafb; border-radius: 10px; padding: 14px; border: 1px solid #e5e7eb; margin-bottom: 16px; font-size: 12px; line-height: 1.8;">
+                    <div>Mã đơn hàng: <strong style="color: #166534; font-size: 13px;">{{ order.code }}</strong></div>
+                    <div>Người nhận hàng: <strong>{{ order.customer_name }}</strong></div>
+                    <div>Số điện thoại: <strong>{{ order.customer_phone }}</strong></div>
+                    <div>Địa chỉ giao: <span>{{ order.shipping_address }}</span></div>
+                    {% if order.note %}
+                        <div>Ghi chú: <em style="color: #4b5563;">{{ order.note }}</em></div>
+                    {% endif %}
+                    <div>Thời gian đặt: <span>{{ order.created_at|date:"d/m/Y H:i" }}</span></div>
+                    <div>
+                        Phương thức thanh toán: 
+                        <strong style="color: #258451;">{{ order.get_payment_method_display }}</strong>
+                    </div>
+                    <div>
+                        Trạng thái thanh toán: 
+                        {% if order.payment_status == 'PAID' %}
+                            <span class="badge" style="background: #dcfce7; color: #15803d; font-weight: 700;">Đã thanh toán</span>
+                        {% else %}
+                            <span class="badge" style="background: #fef3c7; color: #b45309; font-weight: 700;">Chờ thanh toán</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <h3 style="font-size: 13px; font-weight: 800; color: #374151; margin: 0 0 10px;">
+                    Chi tiết nông sản đặt mua:
+                </h3>
+                <div style="display: grid; gap: 10px; margin-bottom: 15px;">
+                    {% for item in order.items.all %}
+                        <div style="display: flex; gap: 12px; align-items: center; padding: 10px; background: #ffffff; border: 1px solid #edf0ed; border-radius: 8px;">
+                            {% if item.product.image_url %}
+                                <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover;">
+                            {% endif %}
+                            <div style="flex: 1;">
+                                <div style="font-size: 13px; font-weight: 700; color: #111827;">{{ item.product.name }}</div>
+                                <div style="font-size: 11px; color: #6b7280;">
+                                    Số lượng: <strong>{{ item.quantity }} {{ item.product.unit }}</strong> x {{ item.unit_price|floatformat:0 }} đ
+                                </div>
+                            </div>
+                            <strong style="font-size: 13px; color: #166534;">{{ item.subtotal|floatformat:0 }} đ</strong>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div style="border-top: 1px solid #e5e7eb; padding-top: 12px; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 14px; font-weight: 700; color: #374151;">TỔNG TIỀN ĐƠN HÀNG:</span>
+                    <strong style="font-size: 18px; font-weight: 800; color: #dc2626;">{{ order.total_amount|floatformat:0 }} VNĐ</strong>
+                </div>
+
+                <div style="margin-top: 20px; display: flex; gap: 8px;">
+                    <a href="{% url 'orders' %}" class="btn-cod" style="margin-top: 0; text-decoration: none; flex: 1;">
+                        📋 Quản lý đơn hàng
+                    </a>
+                    <a href="{% url 'store' %}" class="btn-cod" style="margin-top: 0; text-decoration: none; flex: 1;">
+                        🌿 Cửa hàng nông sản
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function copyText(text, btn) {
+            navigator.clipboard.writeText(text).then(function() {
+                const originalText = btn.innerText;
+                btn.innerText = 'Đã chép!';
+                btn.style.background = '#86efac';
+                setTimeout(function() {
+                    btn.innerText = originalText;
+                    btn.style.background = '#eaf5ed';
+                }, 1500);
+            });
+        }
+    </script>
+</body>
+</html>

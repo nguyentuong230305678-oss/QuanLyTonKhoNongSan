@@ -1,0 +1,1756 @@
+[
+{
+  "model": "auth.permission",
+  "pk": 1,
+  "fields": {
+    "name": "Can add log entry",
+    "content_type": 1,
+    "codename": "add_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 2,
+  "fields": {
+    "name": "Can change log entry",
+    "content_type": 1,
+    "codename": "change_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 3,
+  "fields": {
+    "name": "Can delete log entry",
+    "content_type": 1,
+    "codename": "delete_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 4,
+  "fields": {
+    "name": "Can view log entry",
+    "content_type": 1,
+    "codename": "view_logentry"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 9,
+  "fields": {
+    "name": "Can add group",
+    "content_type": 2,
+    "codename": "add_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 10,
+  "fields": {
+    "name": "Can change group",
+    "content_type": 2,
+    "codename": "change_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 11,
+  "fields": {
+    "name": "Can delete group",
+    "content_type": 2,
+    "codename": "delete_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 12,
+  "fields": {
+    "name": "Can view group",
+    "content_type": 2,
+    "codename": "view_group"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 5,
+  "fields": {
+    "name": "Can add permission",
+    "content_type": 3,
+    "codename": "add_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 6,
+  "fields": {
+    "name": "Can change permission",
+    "content_type": 3,
+    "codename": "change_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 7,
+  "fields": {
+    "name": "Can delete permission",
+    "content_type": 3,
+    "codename": "delete_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 8,
+  "fields": {
+    "name": "Can view permission",
+    "content_type": 3,
+    "codename": "view_permission"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 13,
+  "fields": {
+    "name": "Can add user",
+    "content_type": 4,
+    "codename": "add_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 14,
+  "fields": {
+    "name": "Can change user",
+    "content_type": 4,
+    "codename": "change_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 15,
+  "fields": {
+    "name": "Can delete user",
+    "content_type": 4,
+    "codename": "delete_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 16,
+  "fields": {
+    "name": "Can view user",
+    "content_type": 4,
+    "codename": "view_user"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 17,
+  "fields": {
+    "name": "Can add content type",
+    "content_type": 5,
+    "codename": "add_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 18,
+  "fields": {
+    "name": "Can change content type",
+    "content_type": 5,
+    "codename": "change_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 19,
+  "fields": {
+    "name": "Can delete content type",
+    "content_type": 5,
+    "codename": "delete_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 20,
+  "fields": {
+    "name": "Can view content type",
+    "content_type": 5,
+    "codename": "view_contenttype"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 57,
+  "fields": {
+    "name": "Can add audit detail",
+    "content_type": 7,
+    "codename": "add_auditdetail"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 58,
+  "fields": {
+    "name": "Can change audit detail",
+    "content_type": 7,
+    "codename": "change_auditdetail"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 59,
+  "fields": {
+    "name": "Can delete audit detail",
+    "content_type": 7,
+    "codename": "delete_auditdetail"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 60,
+  "fields": {
+    "name": "Can view audit detail",
+    "content_type": 7,
+    "codename": "view_auditdetail"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 53,
+  "fields": {
+    "name": "Can add Lô hàng",
+    "content_type": 8,
+    "codename": "add_batch"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 54,
+  "fields": {
+    "name": "Can change Lô hàng",
+    "content_type": 8,
+    "codename": "change_batch"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 55,
+  "fields": {
+    "name": "Can delete Lô hàng",
+    "content_type": 8,
+    "codename": "delete_batch"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 56,
+  "fields": {
+    "name": "Can view Lô hàng",
+    "content_type": 8,
+    "codename": "view_batch"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 69,
+  "fields": {
+    "name": "Can add Nhóm nông sản",
+    "content_type": 9,
+    "codename": "add_category"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 70,
+  "fields": {
+    "name": "Can change Nhóm nông sản",
+    "content_type": 9,
+    "codename": "change_category"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 71,
+  "fields": {
+    "name": "Can delete Nhóm nông sản",
+    "content_type": 9,
+    "codename": "delete_category"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 72,
+  "fields": {
+    "name": "Can view Nhóm nông sản",
+    "content_type": 9,
+    "codename": "view_category"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 77,
+  "fields": {
+    "name": "Can add Đơn đặt hàng khách hàng",
+    "content_type": 20,
+    "codename": "add_customerorder"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 78,
+  "fields": {
+    "name": "Can change Đơn đặt hàng khách hàng",
+    "content_type": 20,
+    "codename": "change_customerorder"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 79,
+  "fields": {
+    "name": "Can delete Đơn đặt hàng khách hàng",
+    "content_type": 20,
+    "codename": "delete_customerorder"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 80,
+  "fields": {
+    "name": "Can view Đơn đặt hàng khách hàng",
+    "content_type": 20,
+    "codename": "view_customerorder"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 81,
+  "fields": {
+    "name": "Can add customer order item",
+    "content_type": 21,
+    "codename": "add_customerorderitem"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 82,
+  "fields": {
+    "name": "Can change customer order item",
+    "content_type": 21,
+    "codename": "change_customerorderitem"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 83,
+  "fields": {
+    "name": "Can delete customer order item",
+    "content_type": 21,
+    "codename": "delete_customerorderitem"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 84,
+  "fields": {
+    "name": "Can view customer order item",
+    "content_type": 21,
+    "codename": "view_customerorderitem"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 49,
+  "fields": {
+    "name": "Can add inventory audit",
+    "content_type": 10,
+    "codename": "add_inventoryaudit"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 50,
+  "fields": {
+    "name": "Can change inventory audit",
+    "content_type": 10,
+    "codename": "change_inventoryaudit"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 51,
+  "fields": {
+    "name": "Can delete inventory audit",
+    "content_type": 10,
+    "codename": "delete_inventoryaudit"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 52,
+  "fields": {
+    "name": "Can view inventory audit",
+    "content_type": 10,
+    "codename": "view_inventoryaudit"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 37,
+  "fields": {
+    "name": "Can add issue",
+    "content_type": 11,
+    "codename": "add_issue"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 38,
+  "fields": {
+    "name": "Can change issue",
+    "content_type": 11,
+    "codename": "change_issue"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 39,
+  "fields": {
+    "name": "Can delete issue",
+    "content_type": 11,
+    "codename": "delete_issue"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 40,
+  "fields": {
+    "name": "Can view issue",
+    "content_type": 11,
+    "codename": "view_issue"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 45,
+  "fields": {
+    "name": "Can add issue detail",
+    "content_type": 12,
+    "codename": "add_issuedetail"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 46,
+  "fields": {
+    "name": "Can change issue detail",
+    "content_type": 12,
+    "codename": "change_issuedetail"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 47,
+  "fields": {
+    "name": "Can delete issue detail",
+    "content_type": 12,
+    "codename": "delete_issuedetail"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 48,
+  "fields": {
+    "name": "Can view issue detail",
+    "content_type": 12,
+    "codename": "view_issuedetail"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 33,
+  "fields": {
+    "name": "Can add Vị trí kho",
+    "content_type": 13,
+    "codename": "add_location"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 34,
+  "fields": {
+    "name": "Can change Vị trí kho",
+    "content_type": 13,
+    "codename": "change_location"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 35,
+  "fields": {
+    "name": "Can delete Vị trí kho",
+    "content_type": 13,
+    "codename": "delete_location"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 36,
+  "fields": {
+    "name": "Can view Vị trí kho",
+    "content_type": 13,
+    "codename": "view_location"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 25,
+  "fields": {
+    "name": "Can add partner",
+    "content_type": 14,
+    "codename": "add_partner"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 26,
+  "fields": {
+    "name": "Can change partner",
+    "content_type": 14,
+    "codename": "change_partner"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 27,
+  "fields": {
+    "name": "Can delete partner",
+    "content_type": 14,
+    "codename": "delete_partner"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 28,
+  "fields": {
+    "name": "Can view partner",
+    "content_type": 14,
+    "codename": "view_partner"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 29,
+  "fields": {
+    "name": "Can add Nông sản",
+    "content_type": 15,
+    "codename": "add_product"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 30,
+  "fields": {
+    "name": "Can change Nông sản",
+    "content_type": 15,
+    "codename": "change_product"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 31,
+  "fields": {
+    "name": "Can delete Nông sản",
+    "content_type": 15,
+    "codename": "delete_product"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 32,
+  "fields": {
+    "name": "Can view Nông sản",
+    "content_type": 15,
+    "codename": "view_product"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 41,
+  "fields": {
+    "name": "Can add receipt",
+    "content_type": 16,
+    "codename": "add_receipt"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 42,
+  "fields": {
+    "name": "Can change receipt",
+    "content_type": 16,
+    "codename": "change_receipt"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 43,
+  "fields": {
+    "name": "Can delete receipt",
+    "content_type": 16,
+    "codename": "delete_receipt"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 44,
+  "fields": {
+    "name": "Can view receipt",
+    "content_type": 16,
+    "codename": "view_receipt"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 73,
+  "fields": {
+    "name": "Can add supplier",
+    "content_type": 17,
+    "codename": "add_supplier"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 74,
+  "fields": {
+    "name": "Can change supplier",
+    "content_type": 17,
+    "codename": "change_supplier"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 75,
+  "fields": {
+    "name": "Can delete supplier",
+    "content_type": 17,
+    "codename": "delete_supplier"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 76,
+  "fields": {
+    "name": "Can view supplier",
+    "content_type": 17,
+    "codename": "view_supplier"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 65,
+  "fields": {
+    "name": "Can add user profile",
+    "content_type": 18,
+    "codename": "add_userprofile"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 66,
+  "fields": {
+    "name": "Can change user profile",
+    "content_type": 18,
+    "codename": "change_userprofile"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 67,
+  "fields": {
+    "name": "Can delete user profile",
+    "content_type": 18,
+    "codename": "delete_userprofile"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 68,
+  "fields": {
+    "name": "Can view user profile",
+    "content_type": 18,
+    "codename": "view_userprofile"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 61,
+  "fields": {
+    "name": "Can add waste report",
+    "content_type": 19,
+    "codename": "add_wastereport"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 62,
+  "fields": {
+    "name": "Can change waste report",
+    "content_type": 19,
+    "codename": "change_wastereport"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 63,
+  "fields": {
+    "name": "Can delete waste report",
+    "content_type": 19,
+    "codename": "delete_wastereport"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 64,
+  "fields": {
+    "name": "Can view waste report",
+    "content_type": 19,
+    "codename": "view_wastereport"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 21,
+  "fields": {
+    "name": "Can add session",
+    "content_type": 6,
+    "codename": "add_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 22,
+  "fields": {
+    "name": "Can change session",
+    "content_type": 6,
+    "codename": "change_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 23,
+  "fields": {
+    "name": "Can delete session",
+    "content_type": 6,
+    "codename": "delete_session"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 24,
+  "fields": {
+    "name": "Can view session",
+    "content_type": 6,
+    "codename": "view_session"
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$1500000$7XAXURmOICsmWrAfo4C9hk$tKvQQeOjX4XiKC367xuWWG4OBY245Lfwv9Fld3YRVH4=",
+    "last_login": "2026-10-18T05:28:56.216Z",
+    "is_superuser": true,
+    "username": "era",
+    "first_name": "",
+    "last_name": "",
+    "email": "nguyentuong23030567@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-10-18T05:16:28.372Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 2,
+  "fields": {
+    "password": "pbkdf2_sha256$1500000$mF3aUMrxdLCl4flf9qvdlC$DVZEe3gYKAZzFJ2RWuNcoWoiM53Am+y7xmGt5rd7lKQ=",
+    "last_login": "2026-10-18T09:59:41.218Z",
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "",
+    "last_name": "",
+    "email": "nguyentuong23030567@gmail.gmailcom",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-10-18T07:56:35.793Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 3,
+  "fields": {
+    "password": "pbkdf2_sha256$1500000$6bI9raVJmQrxwe5OdxSRnJ$n4vUcxyFrcjkABOKAYACrOIfgZv+GKeGGX+3DA7aMYo=",
+    "last_login": "2026-10-18T08:49:05.889Z",
+    "is_superuser": false,
+    "username": "thukho",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-10-18T08:42:08.713Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 4,
+  "fields": {
+    "password": "pbkdf2_sha256$1500000$3F2nlLMdnBYsz26Op7Oq2R$2ThjEjMk6rjaEzurMhTExmYrverw8noIWJGAy6DqMzo=",
+    "last_login": "2026-10-18T08:49:06.810Z",
+    "is_superuser": false,
+    "username": "nhanvien",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-10-18T08:42:09.269Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 5,
+  "fields": {
+    "password": "pbkdf2_sha256$1500000$PdZqsUMXRelMTFsjqCua84$Aq2Kttzojj6A3e0R45UCUk+nn9weMi1iK56ROc5S4/E=",
+    "last_login": "2026-10-18T09:22:55.181Z",
+    "is_superuser": false,
+    "username": "test1",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-10-18T09:22:54.376Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 1,
+  "fields": {
+    "app_label": "admin",
+    "model": "logentry"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 2,
+  "fields": {
+    "app_label": "auth",
+    "model": "group"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 3,
+  "fields": {
+    "app_label": "auth",
+    "model": "permission"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 4,
+  "fields": {
+    "app_label": "auth",
+    "model": "user"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 5,
+  "fields": {
+    "app_label": "contenttypes",
+    "model": "contenttype"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 6,
+  "fields": {
+    "app_label": "sessions",
+    "model": "session"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 7,
+  "fields": {
+    "app_label": "core",
+    "model": "auditdetail"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 8,
+  "fields": {
+    "app_label": "core",
+    "model": "batch"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 9,
+  "fields": {
+    "app_label": "core",
+    "model": "category"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 10,
+  "fields": {
+    "app_label": "core",
+    "model": "inventoryaudit"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 11,
+  "fields": {
+    "app_label": "core",
+    "model": "issue"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 12,
+  "fields": {
+    "app_label": "core",
+    "model": "issuedetail"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 13,
+  "fields": {
+    "app_label": "core",
+    "model": "location"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 14,
+  "fields": {
+    "app_label": "core",
+    "model": "partner"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 15,
+  "fields": {
+    "app_label": "core",
+    "model": "product"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 16,
+  "fields": {
+    "app_label": "core",
+    "model": "receipt"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 17,
+  "fields": {
+    "app_label": "core",
+    "model": "supplier"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 18,
+  "fields": {
+    "app_label": "core",
+    "model": "userprofile"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 19,
+  "fields": {
+    "app_label": "core",
+    "model": "wastereport"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 20,
+  "fields": {
+    "app_label": "core",
+    "model": "customerorder"
+  }
+},
+{
+  "model": "contenttypes.contenttype",
+  "pk": 21,
+  "fields": {
+    "app_label": "core",
+    "model": "customerorderitem"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "fva3kvkzkytiiot2qcyfhyyv008sqhwr",
+  "fields": {
+    "session_data": ".eJxVjMsOgjAQAP9lz6bpc1s5eucbyC7dCmpoQuFk_HdDwkGvM5N5w0D7Ng17k3WYM3Rg4PLLmManLIfID1ruVY112daZ1ZGo0zbV1yyv29n-DSZqE3QwFkaHOkQfMuWskZGtjTGiSYmNOEzaek1Cjr2XQlZiKkYHW-QqGODzBdgNN6A:1xIJS4:nk8ChCPdc51Q5ZuQ6E5wePeU4Oy6LpypmUyJY16hCJs",
+    "expire_date": "2026-11-01T05:28:56.220Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "tsjcz07qq4fzkoevu4ke5xywc1q1x6jf",
+  "fields": {
+    "session_data": ".eJxVjMsOwiAQAP9lz4bAFij06N1vaGB3kaqhSR8n47-bJj3odWYybxjTvtVxX2UZJ4YBOrj8spzoKe0Q_EjtPiua27ZMWR2JOu2qbjPL63q2f4Oa1goD2NI7b3LKUVv0IXZkGYU8R2MkFGdyCeh6JCbEjlywUbI2jJS0eBH4fAHZUjgC:1xIMZD:dEubHFsZMgQngaSGP0Vuwx-PhuVIIIWPof-m3QJQZWM",
+    "expire_date": "2026-11-01T08:48:31.647Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "2ezar3ahrxkmpsw6050s5juxyc63mlsb",
+  "fields": {
+    "session_data": ".eJxVjMsOwiAQAP9lz4bAFij06N1vaGB3kaqhSR8n47-bJj3odWYybxjTvtVxX2UZJ4YBOrj8spzoKe0Q_EjtPiua27ZMWR2JOu2qbjPL63q2f4Oa1goD2NI7b3LKUVv0IXZkGYU8R2MkFGdyCeh6JCbEjlywUbI2jJS0eBH4fAHZUjgC:1xIMZl:brq1VomQNS6sc28QTRt-IaDQXcKVrf_0d4jlLLFaG-k",
+    "expire_date": "2026-11-01T08:49:05.894Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "3tyin8qt3blzuvzxu6adtswqu9r3rqri",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQAP-yZ0NAFlx69O4byLJQqRqalPZk_Ltp0oNeZybzhsjbWuPWyxKnDAMgnH5ZYnmWtov84HaflcxtXaak9kQdtqvbnMvrerR_g8q9wgCeLFHJRstZB2ed9-QwWSTDWiRdsCCG4MlY64IPGnFEksSGjMsGR_h8AaLuNjg:1xIMZm:uRVCad35S1PvsmlJUEmTTrWjQaqTZ8jW-psNyXFPFxk",
+    "expire_date": "2026-11-01T08:49:06.814Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "0l2lmrc4p5ykhcqabyyapl8cdxd5cixc",
+  "fields": {
+    "session_data": ".eJxVjMsOwiAQAP9lz4YABYEevfcbml2WlaqhSR8n47-bJj3odWYybxhx3-q4r2UZJ4YeLFx-GWF-lnYIfmC7zyrPbVsmUkeiTruqYebyup3t36DiWqEHSlp3GDEgO6e1MWJTYOM5es9diNbnmAuVQnK1HslZFw0miYKipRP4fAHYSTgv:1xIN7X:_URSy-sca9j20o3aRpClKdC3MskEXPqTWAlRtcOPv1g",
+    "expire_date": "2026-11-01T09:23:59.947Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "b0f2b93bbxs68emhvu2avjqf7oe5uko6",
+  "fields": {
+    "session_data": ".eJxVjMsOwiAQAP9lz4YABYEevfcbml2WlaqhSR8n47-bJj3odWYybxhx3-q4r2UZJ4YeLFx-GWF-lnYIfmC7zyrPbVsmUkeiTruqYebyup3t36DiWqEHSlp3GDEgO6e1MWJTYOM5es9diNbnmAuVQnK1HslZFw0miYKipRP4fAHYSTgv:1xINfj:TA_AhxCCKIZTBAaOf7EU-jXukS4kBzFFG50GRd_uwJ4",
+    "expire_date": "2026-11-01T09:59:19.888Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "0jvjgwb3bmpd7ot1c13catvfwwfgczgm",
+  "fields": {
+    "session_data": ".eJxVjMsOwiAQAP9lz4YABYEevfcbml2WlaqhSR8n47-bJj3odWYybxhx3-q4r2UZJ4YeLFx-GWF-lnYIfmC7zyrPbVsmUkeiTruqYebyup3t36DiWqEHSlp3GDEgO6e1MWJTYOM5es9diNbnmAuVQnK1HslZFw0miYKipRP4fAHYSTgv:1xINg5:BlpATarR20rH5pSRF75w9ykM5B47iNxXAJfGcg12o-8",
+    "expire_date": "2026-11-01T09:59:41.221Z"
+  }
+},
+{
+  "model": "core.userprofile",
+  "pk": 1,
+  "fields": {
+    "user": 2,
+    "role": "ADMIN",
+    "full_name": "Nguyễn Ngọc Cát Tường",
+    "phone": "0901234567",
+    "address": ""
+  }
+},
+{
+  "model": "core.userprofile",
+  "pk": 2,
+  "fields": {
+    "user": 3,
+    "role": "WAREHOUSE_MANAGER",
+    "full_name": "Trần Văn Thủ Kho",
+    "phone": "0912345678",
+    "address": ""
+  }
+},
+{
+  "model": "core.userprofile",
+  "pk": 3,
+  "fields": {
+    "user": 4,
+    "role": "STAFF",
+    "full_name": "Lê Thị Nhân Viên",
+    "phone": "0923456789",
+    "address": ""
+  }
+},
+{
+  "model": "core.userprofile",
+  "pk": 4,
+  "fields": {
+    "user": 5,
+    "role": "CUSTOMER",
+    "full_name": "123",
+    "phone": "123",
+    "address": ""
+  }
+},
+{
+  "model": "core.category",
+  "pk": 1,
+  "fields": {
+    "code": "TRAI_CAY",
+    "name": "Trái cây nhiệt đới",
+    "storage_type": "COOL",
+    "description": "Bảo quản nhiệt độ mát 2-8°C"
+  }
+},
+{
+  "model": "core.category",
+  "pk": 2,
+  "fields": {
+    "code": "RAU_CU",
+    "name": "Rau củ tươi",
+    "storage_type": "COOL",
+    "description": "Bảo quản nhiệt độ 4-10°C, độ ẩm cao"
+  }
+},
+{
+  "model": "core.category",
+  "pk": 3,
+  "fields": {
+    "code": "KHO_GAO",
+    "name": "Nông sản khô & Gạo",
+    "storage_type": "DRY",
+    "description": "Bảo quản nơi khô ráo, thoáng mát"
+  }
+},
+{
+  "model": "core.category",
+  "pk": 4,
+  "fields": {
+    "code": "THUY_SAN",
+    "name": "Thủy sản cấp đông",
+    "storage_type": "FROZEN",
+    "description": "Bảo quản kho đông âm 18°C"
+  }
+},
+{
+  "model": "core.location",
+  "pk": 1,
+  "fields": {
+    "zone": "Kho Mát A",
+    "shelf": "Kệ 01",
+    "level": "Tầng 1",
+    "note": ""
+  }
+},
+{
+  "model": "core.location",
+  "pk": 2,
+  "fields": {
+    "zone": "Kho Mát A",
+    "shelf": "Kệ 01",
+    "level": "Tầng 2",
+    "note": ""
+  }
+},
+{
+  "model": "core.location",
+  "pk": 3,
+  "fields": {
+    "zone": "Kho Mát A",
+    "shelf": "Kệ 02",
+    "level": "Tầng 1",
+    "note": ""
+  }
+},
+{
+  "model": "core.location",
+  "pk": 4,
+  "fields": {
+    "zone": "Kho Khô B",
+    "shelf": "Kệ 01",
+    "level": "Tầng 1",
+    "note": ""
+  }
+},
+{
+  "model": "core.location",
+  "pk": 5,
+  "fields": {
+    "zone": "Kho Đông C",
+    "shelf": "Kệ 01",
+    "level": "Tầng 1",
+    "note": ""
+  }
+},
+{
+  "model": "core.product",
+  "pk": 1,
+  "fields": {
+    "code": "NS-001",
+    "name": "Xoài cát Hòa Lộc Tiền Giang",
+    "category": 1,
+    "unit": "kg",
+    "safety_stock": "100.00",
+    "storage_temp": "6°C - 10°C",
+    "strategy": "FEFO",
+    "price": "65000.00",
+    "is_active": true,
+    "image_url": "https://images.unsplash.com/photo-1553279768-865429fa0078?w=500&auto=format&fit=crop&q=60",
+    "season": "SUMMER",
+    "supplier": null,
+    "origin": "Việt Nam",
+    "quality_standard": "VietGAP",
+    "description": ""
+  }
+},
+{
+  "model": "core.product",
+  "pk": 2,
+  "fields": {
+    "code": "NS-002",
+    "name": "Gạo ST25 Hút chân không",
+    "category": 3,
+    "unit": "kg",
+    "safety_stock": "300.00",
+    "storage_temp": "18°C - 25°C",
+    "strategy": "FIFO",
+    "price": "36000.00",
+    "is_active": true,
+    "image_url": "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=500&auto=format&fit=crop&q=60",
+    "season": "WINTER",
+    "supplier": null,
+    "origin": "Việt Nam",
+    "quality_standard": "VietGAP",
+    "description": ""
+  }
+},
+{
+  "model": "core.product",
+  "pk": 3,
+  "fields": {
+    "code": "NS-003",
+    "name": "Cà chua bi Đà Lạt",
+    "category": 2,
+    "unit": "kg",
+    "safety_stock": "80.00",
+    "storage_temp": "5°C - 8°C",
+    "strategy": "FEFO",
+    "price": "42000.00",
+    "is_active": true,
+    "image_url": "https://images.unsplash.com/photo-1592924357228-91a4daadcfea?w=500&auto=format&fit=crop&q=60",
+    "season": "AUTUMN",
+    "supplier": null,
+    "origin": "Việt Nam",
+    "quality_standard": "VietGAP",
+    "description": ""
+  }
+},
+{
+  "model": "core.product",
+  "pk": 4,
+  "fields": {
+    "code": "NS-004",
+    "name": "Thanh long ruột đỏ Bình Thuận",
+    "category": 1,
+    "unit": "kg",
+    "safety_stock": "120.00",
+    "storage_temp": "4°C - 8°C",
+    "strategy": "FEFO",
+    "price": "28000.00",
+    "is_active": true,
+    "image_url": "https://images.unsplash.com/photo-1527325678964-54921661f888?w=500&auto=format&fit=crop&q=60",
+    "season": "SUMMER",
+    "supplier": null,
+    "origin": "Việt Nam",
+    "quality_standard": "VietGAP",
+    "description": ""
+  }
+},
+{
+  "model": "core.product",
+  "pk": 5,
+  "fields": {
+    "code": "NS-005",
+    "name": "Tôm sú tươi cấp đông",
+    "category": 4,
+    "unit": "kg",
+    "safety_stock": "50.00",
+    "storage_temp": "-18°C",
+    "strategy": "FEFO",
+    "price": "240000.00",
+    "is_active": true,
+    "image_url": "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=500&auto=format&fit=crop&q=60",
+    "season": "ALL_YEAR",
+    "supplier": null,
+    "origin": "Việt Nam",
+    "quality_standard": "VietGAP",
+    "description": ""
+  }
+},
+{
+  "model": "core.product",
+  "pk": 6,
+  "fields": {
+    "code": "NS-006",
+    "name": "Dưa hấu Long An đỏ ngọt",
+    "category": 1,
+    "unit": "kg",
+    "safety_stock": "150.00",
+    "storage_temp": "8°C - 12°C",
+    "strategy": "FEFO",
+    "price": "22000.00",
+    "is_active": true,
+    "image_url": "https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=500&auto=format&fit=crop&q=60",
+    "season": "SPRING",
+    "supplier": null,
+    "origin": "Việt Nam",
+    "quality_standard": "VietGAP",
+    "description": ""
+  }
+},
+{
+  "model": "core.product",
+  "pk": 7,
+  "fields": {
+    "code": "NS-007",
+    "name": "Bắp cải trắng sạch Đà Lạt",
+    "category": 2,
+    "unit": "kg",
+    "safety_stock": "80.00",
+    "storage_temp": "4°C - 8°C",
+    "strategy": "FEFO",
+    "price": "18000.00",
+    "is_active": true,
+    "image_url": "https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=500&auto=format&fit=crop&q=60",
+    "season": "WINTER",
+    "supplier": null,
+    "origin": "Việt Nam",
+    "quality_standard": "VietGAP",
+    "description": ""
+  }
+},
+{
+  "model": "core.product",
+  "pk": 8,
+  "fields": {
+    "code": "NS-008",
+    "name": "Bưởi da xanh Bến Tre tép hồng",
+    "category": 1,
+    "unit": "kg",
+    "safety_stock": "100.00",
+    "storage_temp": "10°C - 15°C",
+    "strategy": "FEFO",
+    "price": "55000.00",
+    "is_active": true,
+    "image_url": "https://images.unsplash.com/photo-1577234286642-fc512a5f8f11?w=500&auto=format&fit=crop&q=60",
+    "season": "AUTUMN",
+    "supplier": null,
+    "origin": "Việt Nam",
+    "quality_standard": "VietGAP",
+    "description": ""
+  }
+},
+{
+  "model": "core.supplier",
+  "pk": 1,
+  "fields": {
+    "name": "HTX Nông nghiệp Tiền Giang",
+    "phone": "0273.3888999",
+    "email": "htxtiengiang@gmail.com",
+    "address": "Huyện Cái Bè, Tiền Giang",
+    "notes": ""
+  }
+},
+{
+  "model": "core.supplier",
+  "pk": 2,
+  "fields": {
+    "name": "Đà Lạt Fresh Farm",
+    "phone": "0263.3777888",
+    "email": "dalatfarm@fresh.vn",
+    "address": "Đức Trọng, Lâm Đồng",
+    "notes": ""
+  }
+},
+{
+  "model": "core.supplier",
+  "pk": 3,
+  "fields": {
+    "name": "Vựa Gạo Sóc Trăng",
+    "phone": "0299.3666777",
+    "email": "gaosoctrang@gmail.com",
+    "address": "Mỹ Xuyên, Sóc Trăng",
+    "notes": ""
+  }
+},
+{
+  "model": "core.supplier",
+  "pk": 4,
+  "fields": {
+    "name": "Hải Sản Bạc Liêu",
+    "phone": "0291.3555666",
+    "email": "haisanbaclieu@gmail.com",
+    "address": "Thị xã Giá Rai, Bạc Liêu",
+    "notes": ""
+  }
+},
+{
+  "model": "core.supplier",
+  "pk": 5,
+  "fields": {
+    "name": "đạt",
+    "phone": "123",
+    "email": "",
+    "address": "123",
+    "notes": ""
+  }
+},
+{
+  "model": "core.supplier",
+  "pk": 6,
+  "fields": {
+    "name": "HTX Nông Nghiệp Đà Lạt Farm",
+    "phone": "02633888999",
+    "email": "",
+    "address": "Đà Lạt, Lâm Đồng",
+    "notes": "Cung cấp rau củ VietGAP chuẩn sạch"
+  }
+},
+{
+  "model": "core.supplier",
+  "pk": 7,
+  "fields": {
+    "name": "Vựa Trái Cây Miền Tây - Cái Bè",
+    "phone": "02733777888",
+    "email": "",
+    "address": "Cái Bè, Tiền Giang",
+    "notes": "Chuyên xoài Cát Hòa Lộc, bưởi da xanh xuất khẩu"
+  }
+},
+{
+  "model": "core.supplier",
+  "pk": 8,
+  "fields": {
+    "name": "HTX Lúa Gạo Sóc Trăng",
+    "phone": "02993666555",
+    "email": "",
+    "address": "Mỹ Xuyên, Sóc Trăng",
+    "notes": "Gạo đặc sản ST25 đạt giải nhất thế giới"
+  }
+},
+{
+  "model": "core.partner",
+  "pk": 1,
+  "fields": {
+    "name": "Hệ thống Siêu thị Co.opmart",
+    "contact_person": "Nguyễn Văn Mua Hàng",
+    "phone": "028.38360143",
+    "address": "199-205 Nguyễn Thái Học, Q.1, TP.HCM",
+    "notes": ""
+  }
+},
+{
+  "model": "core.partner",
+  "pk": 2,
+  "fields": {
+    "name": "Chuỗi Cửa hàng Bách Hóa Xanh",
+    "contact_person": "Trần Thu Mua",
+    "phone": "1900.1908",
+    "address": "Khu Công Nghệ Cao, TP. Thủ Đức",
+    "notes": ""
+  }
+},
+{
+  "model": "core.partner",
+  "pk": 3,
+  "fields": {
+    "name": "Chợ Đầu mối Nông sản Thủ Đức",
+    "contact_person": "Vựa Trái Cây 5 Sao",
+    "phone": "028.37290000",
+    "address": "Quốc lộ 1A, Tam Bình, Thủ Đức",
+    "notes": ""
+  }
+},
+{
+  "model": "core.partner",
+  "pk": 4,
+  "fields": {
+    "name": "Anh Hoàng Siêu Thị Mini",
+    "contact_person": "",
+    "phone": "0909888777",
+    "address": "45 Nguyễn Huệ, Quận 1, TP.HCM",
+    "notes": ""
+  }
+},
+{
+  "model": "core.partner",
+  "pk": 5,
+  "fields": {
+    "name": "a",
+    "contact_person": "",
+    "phone": "2464664555646465",
+    "address": "dfsfhdhfjdgsf",
+    "notes": ""
+  }
+},
+{
+  "model": "core.partner",
+  "pk": 6,
+  "fields": {
+    "name": "123",
+    "contact_person": "123",
+    "phone": "123",
+    "address": "123",
+    "notes": ""
+  }
+},
+{
+  "model": "core.partner",
+  "pk": 7,
+  "fields": {
+    "name": "Nguyen Era",
+    "contact_person": "",
+    "phone": "123",
+    "address": "123",
+    "notes": ""
+  }
+},
+{
+  "model": "core.receipt",
+  "pk": 1,
+  "fields": {
+    "code": "PNK-20261010-001",
+    "supplier": 1,
+    "created_by": 2,
+    "created_at": "2026-10-18T08:42:09.884Z",
+    "total_amount": "22500000.00",
+    "note": "Nhập mẻ xoài Hòa Lộc đầu vụ"
+  }
+},
+{
+  "model": "core.receipt",
+  "pk": 2,
+  "fields": {
+    "code": "PNK-20261012-002",
+    "supplier": 2,
+    "created_by": 3,
+    "created_at": "2026-10-18T08:42:09.887Z",
+    "total_amount": "15000000.00",
+    "note": "Nhập cà chua bi sạch VietGAP"
+  }
+},
+{
+  "model": "core.receipt",
+  "pk": 3,
+  "fields": {
+    "code": "PNK-20261015-003",
+    "supplier": 3,
+    "created_by": 3,
+    "created_at": "2026-10-18T08:42:09.890Z",
+    "total_amount": "36000000.00",
+    "note": "Nhập 1 tấn gạo ST25"
+  }
+},
+{
+  "model": "core.batch",
+  "pk": 1,
+  "fields": {
+    "batch_code": "LOT-XOAI-261001-01",
+    "product": 1,
+    "receipt": 1,
+    "location": 1,
+    "mfg_date": "2026-10-08",
+    "exp_date": "2026-10-22",
+    "qty_initial": "150.00",
+    "qty_current": "95.00",
+    "unit_cost": "55000.00",
+    "status": "ACTIVE"
+  }
+},
+{
+  "model": "core.batch",
+  "pk": 4,
+  "fields": {
+    "batch_code": "LOT-CACHUA-261012-01",
+    "product": 3,
+    "receipt": 2,
+    "location": 1,
+    "mfg_date": "2026-10-12",
+    "exp_date": "2026-10-24",
+    "qty_initial": "100.00",
+    "qty_current": "44.30",
+    "unit_cost": "35000.00",
+    "status": "ACTIVE"
+  }
+},
+{
+  "model": "core.batch",
+  "pk": 6,
+  "fields": {
+    "batch_code": "LOT-BAPCAI-261018-01",
+    "product": 7,
+    "receipt": 1,
+    "location": 1,
+    "mfg_date": "2026-10-16",
+    "exp_date": "2026-10-28",
+    "qty_initial": "200.00",
+    "qty_current": "180.00",
+    "unit_cost": "12000.00",
+    "status": "ACTIVE"
+  }
+},
+{
+  "model": "core.batch",
+  "pk": 2,
+  "fields": {
+    "batch_code": "LOT-XOAI-261008-02",
+    "product": 1,
+    "receipt": 1,
+    "location": 2,
+    "mfg_date": "2026-10-13",
+    "exp_date": "2026-10-30",
+    "qty_initial": "250.00",
+    "qty_current": "210.00",
+    "unit_cost": "56000.00",
+    "status": "ACTIVE"
+  }
+},
+{
+  "model": "core.batch",
+  "pk": 3,
+  "fields": {
+    "batch_code": "LOT-XOAI-261015-03",
+    "product": 1,
+    "receipt": 1,
+    "location": 3,
+    "mfg_date": "2026-10-17",
+    "exp_date": "2026-11-15",
+    "qty_initial": "300.00",
+    "qty_current": "300.00",
+    "unit_cost": "57000.00",
+    "status": "ACTIVE"
+  }
+},
+{
+  "model": "core.batch",
+  "pk": 7,
+  "fields": {
+    "batch_code": "LOT-BUOI-261018-01",
+    "product": 8,
+    "receipt": 1,
+    "location": 1,
+    "mfg_date": "2026-10-14",
+    "exp_date": "2026-11-22",
+    "qty_initial": "150.00",
+    "qty_current": "150.00",
+    "unit_cost": "42000.00",
+    "status": "ACTIVE"
+  }
+},
+{
+  "model": "core.batch",
+  "pk": 5,
+  "fields": {
+    "batch_code": "LOT-ST25-261015-01",
+    "product": 2,
+    "receipt": 3,
+    "location": 4,
+    "mfg_date": "2026-10-15",
+    "exp_date": "2027-04-16",
+    "qty_initial": "1000.00",
+    "qty_current": "880.00",
+    "unit_cost": "29000.00",
+    "status": "ACTIVE"
+  }
+},
+{
+  "model": "core.wastereport",
+  "pk": 1,
+  "fields": {
+    "code": "PHH-20261018-001",
+    "batch": 4,
+    "reported_by": 2,
+    "report_date": "2026-10-18",
+    "quantity": "0.70",
+    "reason": "QUA_HAN",
+    "note": "aa"
+  }
+},
+{
+  "model": "core.customerorder",
+  "pk": 2,
+  "fields": {
+    "code": "DH-20261018091934",
+    "customer": null,
+    "customer_name": "a",
+    "customer_phone": "2464664555646465",
+    "shipping_address": "dfsfhdhfjdgsf",
+    "payment_method": "VIETQR",
+    "payment_status": "PAID",
+    "order_status": "NEW",
+    "total_amount": "360000.00",
+    "created_at": "2026-10-18T09:20:47.909Z",
+    "note": "dsfsdfshgfhfgjfyj"
+  }
+},
+{
+  "model": "core.customerorder",
+  "pk": 1,
+  "fields": {
+    "code": "DH-TEST-20261018-001",
+    "customer": null,
+    "customer_name": "Anh Hoàng Siêu Thị Mini",
+    "customer_phone": "0909888777",
+    "shipping_address": "45 Nguyễn Huệ, Quận 1, TP.HCM",
+    "payment_method": "VIETQR",
+    "payment_status": "PAID",
+    "order_status": "NEW",
+    "total_amount": "650000.00",
+    "created_at": "2026-10-18T09:16:02.403Z",
+    "note": "Giao hàng sáng mai lúc 8h"
+  }
+},
+{
+  "model": "core.customerorderitem",
+  "pk": 1,
+  "fields": {
+    "order": 1,
+    "product": 1,
+    "quantity": "10.00",
+    "unit_price": "65000.00",
+    "subtotal": "650000.00"
+  }
+},
+{
+  "model": "core.customerorderitem",
+  "pk": 2,
+  "fields": {
+    "order": 2,
+    "product": 2,
+    "quantity": "10.00",
+    "unit_price": "36000.00",
+    "subtotal": "360000.00"
+  }
+}
+]

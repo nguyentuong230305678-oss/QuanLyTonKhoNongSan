@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}Báo Cáo & Thống Kê Kho | Nông Sản Xanh{% endblock %}
+{% block nav_reports %}active{% endblock %}
+{% block breadcrumb %}Báo cáo & Thống kê Tồn kho{% endblock %}
+
+{% block content %}
+<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+    <div>
+        <h1 style="font-size: 20px; font-weight: 800; margin: 0 0 4px;">Báo Cáo & Thống Kê Tồn Kho</h1>
+        <p style="margin: 0; color: #6b7280; font-size: 11px;">Tổng hợp giá trị hàng tồn, tỷ lệ hao hụt và danh sách các lô hàng cận hạn sử dụng</p>
+    </div>
+    <div style="display: flex; gap: 8px;">
+        <button onclick="exportTableToCSV('bao_cao_ton_kho.csv')" class="btn btn-success">
+            📊 Xuất Excel (CSV)
+        </button>
+        <button onclick="window.print()" class="btn btn-outline">
+            🖨 In Báo Cáo
+        </button>
+    </div>
+</div>
+
+<!-- THỐNG KÊ THEO NHÓM NÔNG SẢN -->
+<div class="card">
+    <h2 class="card-title">📦 Cơ Cấu Tồn Kho Theo Nhóm Nông Sản</h2>
+    <div class="grid-3">
+        {% for cs in cat_stats %}
+        <div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 15px;">
+            <strong style="color: #1b6840; font-size: 13px;">{{ cs.name }}</strong>
+            <div style="margin: 10px 0 5px; font-size: 18px; font-weight: 800; color: #111827;">
+                {{ cs.value|floatformat:0 }} đ
+            </div>
+            <div style="font-size: 10px; color: #6b7280;">Tổng khối lượng: <strong>{{ cs.qty }} kg/tấn</strong></div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- BẢNG TỔNG HỢP CÁC LÔ HÀNG CẬN HẠN CẦN THANH LÝ GẤP -->
+<div class="card" id="reportTableCard">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <div>
+            <h2 class="card-title" style="margin: 0; color: #dc2626;">🚨 Danh Sách Các Lô Hàng Khẩn Cấp (< 7 Ngày)</h2>
+            <p style="margin: 3px 0 0; font-size: 10px; color: #6b7280;">Cần lên kế hoạch xuất bán sỉ hoặc hạ giá thanh lý để tránh hủy hàng</p>
+        </div>
+    </div>
+
+    <table class="data-table" id="exportTable">
+        <thead>
+            <tr>
+                <th>Mã Lô</th>
+                <th>Nông sản</th>
+                <th>Vị trí kho</th>
+                <th>Hạn Dùng (EXP)</th>
+                <th>Số ngày còn lại</th>
+                <th>Số lượng tồn</th>
+                <th>Giá trị tồn vốn</th>
+                <th>Đề xuất xử lý</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for b in critical_list %}
+            <tr style="background: #fff5f5;">
+                <td><strong>{{ b.batch_code }}</strong></td>
+                <td>{{ b.product.name }}</td>
+                <td>{{ b.location|default:"Kho" }}</td>
+                <td><strong style="color: #dc2626;">{{ b.exp_date|date:"d/m/Y" }}</strong></td>
+                <td><strong style="color: #dc2626;">{{ b.days_to_expiry }} ngày</strong></td>
+                <td><strong>{{ b.qty_current }}</strong> {{ b.product.unit }}</td>
+                <td>{{ b.qty_current|floatformat:0 }} đ</td>
+                <td><span class="badge badge-critical">Xuất FEFO gấp</span></td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" style="text-align: center; color: #15803d; padding: 15px;">
+                    ✓ Tuyệt vời! Hiện không có lô hàng nào dưới 7 ngày hạn dùng.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    function exportTableToCSV(filename) {
+        let csv = [];
+        let rows = document.querySelectorAll("#exportTable tr");
+        for (let i = 0; i < rows.length; i++) {
+            let row = [], cols = rows[i].querySelectorAll("td, th");
+            for (let j = 0; j < cols.length; j++) 
+                row.push('"' + cols[j].innerText.replace(/"/g, '""') + '"');
+            csv.push(row.join(","));
+        }
+        let csvFile = new Blob(["\uFEFF" + csv.join("\n")], { type: "text/csv;charset=utf-8;" });
+        let downloadLink = document.createElement("a");
+        downloadLink.download = filename;
+        downloadLink.href = window.URL.createObjectURL(csvFile);
+        downloadLink.style.display = "none";
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+    }
+</script>
+{% endblock %}

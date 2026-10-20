@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block title %}Phiếu Xuất Kho: {{ issue.code }} | Nông Sản Xanh{% endblock %}
+{% block nav_outbound %}active{% endblock %}
+{% block breadcrumb %}Chi tiết Phiếu Xuất Kho {{ issue.code }}{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <div>
+        <h1 style="font-size: 20px; font-weight: 800; margin: 0 0 4px;">Phiếu Xuất Kho: {{ issue.code }}</h1>
+        <p style="margin: 0; color: #6b7280; font-size: 11px;">Khách hàng: {{ issue.partner.name }} | Thời gian: {{ issue.created_at|date:"d/m/Y H:i" }}</p>
+    </div>
+    <div style="display: flex; gap: 8px;">
+        <button onclick="window.print()" class="btn btn-primary">
+            🖨 In Phiếu Xuất (PDF / A4)
+        </button>
+        <a href="{% url 'outbound' %}" class="btn btn-outline">
+            ← Quay lại Xuất kho
+        </a>
+    </div>
+</div>
+
+<div class="card" id="printableInvoice" style="padding: 30px;">
+    <!-- TIÊU ĐỀ IN PHIẾU -->
+    <div style="display: flex; justify-content: space-between; border-bottom: 2px solid #258451; padding-bottom: 15px; margin-bottom: 20px;">
+        <div>
+            <h2 style="margin: 0; color: #258451; font-size: 18px;">🌱 KHO NÔNG SẢN XANH VIỆT NAM</h2>
+            <div style="font-size: 10px; color: #6b7280; margin-top: 4px;">Địa chỉ: 236B Lê Văn Sỹ, Phường Tân Sơn Hòa, TP.HCM | Hotline: 0901.234.567</div>
+        </div>
+        <div style="text-align: right;">
+            <h3 style="margin: 0; color: #111827; font-size: 16px;">PHIẾU XUẤT KHO</h3>
+            <div style="font-size: 11px; font-weight: 700; color: #2563eb;">MÃ: {{ issue.code }}</div>
+            <div style="font-size: 10px; color: #6b7280;">Ngày: {{ issue.created_at|date:"d/m/Y H:i" }}</div>
+        </div>
+    </div>
+
+    <!-- THÔNG TIN GIAO NHẬN -->
+    <div class="grid-2" style="font-size: 11px; margin-bottom: 20px; line-height: 1.8;">
+        <div>
+            <div>Đơn vị nhận hàng: <strong>{{ issue.partner.name }}</strong></div>
+            <div>Địa chỉ giao nhận: {{ issue.partner.address|default:"Tại kho người bán" }}</div>
+            <div>Người liên hệ: {{ issue.partner.contact_person|default:"Đại diện đối tác" }} ({{ issue.partner.phone }})</div>
+        </div>
+        <div>
+            <div>Người lập phiếu: <strong>{{ issue.created_by.username|default:"Thủ kho" }}</strong></div>
+            <div>Chiến lược xuất: <strong style="color: #2563eb;">FEFO (Ưu tiên cận hạn)</strong></div>
+            <div>Ghi chú: {{ issue.note|default:"Giao hàng đủ tiêu chuẩn chất lượng" }}</div>
+        </div>
+    </div>
+
+    <!-- BẢNG CHI TIẾT CÁC LÔ HÀNG XUẤT -->
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th style="width: 40px;">STT</th>
+                <th>Mã Lô Hàng</th>
+                <th>Tên Nông sản</th>
+                <th>Hạn Dùng (EXP)</th>
+                <th>Vị trí lấy hàng</th>
+                <th style="text-align: right;">Số lượng xuất</th>
+                <th style="text-align: right;">Đơn giá</th>
+                <th style="text-align: right;">Thành tiền</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for d in issue.details.all %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td><strong>{{ d.batch.batch_code }}</strong></td>
+                <td>{{ d.batch.product.name }}</td>
+                <td>{{ d.batch.exp_date|date:"d/m/Y" }}</td>
+                <td>{{ d.batch.location|default:"Kho mát" }}</td>
+                <td style="text-align: right;"><strong>{{ d.quantity }}</strong> {{ d.batch.product.unit }}</td>
+                <td style="text-align: right;">{{ d.unit_price|floatformat:0 }} đ</td>
+                <td style="text-align: right;"><strong>{{ d.quantity|floatformat:0 }} đ</strong></td>
+            </tr>
+            {% endfor %}
+            <tr style="background: #f9fafb; font-weight: 700;">
+                <td colspan="7" style="text-align: right;">TỔNG CỘNG GIÁ TRỊ:</td>
+                <td style="text-align: right; color: #2563eb; font-size: 13px;">
+                    {{ issue.total_amount|floatformat:0 }} VNĐ
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- CHỮ KÝ CÁC BÊN -->
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); text-align: center; margin-top: 50px; font-size: 11px;">
+        <div>
+            <strong>Người Lập Phiếu</strong><br>
+            <small style="color: #6b7280;">(Ký và ghi rõ họ tên)</small><br><br><br><br>
+            <strong>{{ issue.created_by.username|default:"Thủ kho" }}</strong>
+        </div>
+        <div>
+            <strong>Thủ Kho Xuất Hàng</strong><br>
+            <small style="color: #6b7280;">(Ký và ghi rõ họ tên)</small><br><br><br><br>
+            <strong>Xác nhận xuất đủ lô</strong>
+        </div>
+        <div>
+            <strong>Đại Diện Khách Hàng</strong><br>
+            <small style="color: #6b7280;">(Ký và ghi rõ họ tên)</small><br><br><br><br>
+            <strong>{{ issue.partner.contact_person|default:"Người nhận hàng" }}</strong>
+        </div>
+    </div>
+</div>
+
+<style>
+@media print {
+    .sidebar, .topbar, .btn { display: none !important; }
+    .main-content { margin-left: 0 !important; }
+    .page-content { padding: 0 !important; width: 100% !important; }
+    #printableInvoice { border: none !important; box-shadow: none !important; padding: 0 !important; }
+}
+</style>
+{% endblock %}

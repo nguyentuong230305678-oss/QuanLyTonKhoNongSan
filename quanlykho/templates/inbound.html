@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+
+{% block title %}Quản lý Nhập kho & Lô hàng | Nông Sản Xanh{% endblock %}
+{% block nav_inbound %}active{% endblock %}
+{% block breadcrumb %}Nhập kho & Tạo Lô hàng{% endblock %}
+
+{% block content %}
+<div class="page-heading" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+    <div>
+        <p class="eyebrow">GHI NHẬN HÀNG HÓA MỚI</p>
+        <h1 style="font-size: 20px; font-weight: 800; margin: 0 0 4px;">Lập Phiếu Nhập Kho</h1>
+        <p style="margin: 0; color: #6b7280; font-size: 11px;">Ghi nhận phiếu nhập từ nhà cung cấp, khởi tạo mã Lô duy nhất, HSD và vị trí lưu kho</p>
+    </div>
+</div>
+
+<div class="content-grid operation-layout" style="grid-template-columns: minmax(0, 1.4fr) minmax(320px, 1fr);">
+    <!-- CỘT TRÁI: FORM LẬP PHIẾU NHẬP VÀ KHỞI TẠO LÔ -->
+    <div class="card">
+        <h2 class="card-title" style="color: #1b6840;">📥 Lập Phiếu Nhập Kho Mới (Khởi tạo Lô hàng)</h2>
+        
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-section-heading">
+                <strong>Thông tin chung</strong>
+                <span>Nhà cung cấp và mặt hàng nhập kho</span>
+            </div>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label class="form-label">Nhà cung cấp / Nông trại (*)</label>
+                    <select name="supplier_id" class="form-select" required>
+                        <option value="">-- Chọn Nhà cung cấp --</option>
+                        {% for s in suppliers %}
+                            <option value="{{ s.id }}">{{ s.name }} ({{ s.address }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nông sản nhập kho (*)</label>
+                    <select name="product_id" class="form-select" required>
+                        <option value="">-- Chọn Nông sản --</option>
+                        {% for p in products %}
+                            <option value="{{ p.id }}">{{ p.code }} - {{ p.name }} (ĐVT: {{ p.unit }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid-3">
+                <div class="form-group">
+                    <label class="form-label">Số lượng nhập (*)</label>
+                    <input type="number" step="0.1" name="qty" class="form-control" placeholder="Ví dụ: 200" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Giá nhập đơn vị (VNĐ)</label>
+                    <input type="number" name="unit_cost" class="form-control" placeholder="Giá vốn / 1 ĐVT">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Vị trí lưu kho (Khu-Kệ-Tầng)</label>
+                    <select name="location_id" class="form-select">
+                        <option value="">-- Chưa gán vị trí --</option>
+                        {% for loc in locations %}
+                            <option value="{{ loc.id }}">{{ loc }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid-2" style="background: #f0f7f2; padding: 12px; border-radius: 8px; margin-bottom: 15px;">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label" style="color: #1b6840;">Ngày sản xuất / Thu hoạch (MFG)</label>
+                    <input type="date" name="mfg_date" class="form-control" value="{{ today }}">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label" style="color: #1b6840;">Hạn sử dụng bắt buộc (EXP) (*)</label>
+                    <input type="date" name="exp_date" class="form-control" value="{{ default_exp }}" required>
+                </div>
+            </div>
+
+            <div class="form-section-heading">
+                <strong>Thông tin phiếu nhập</strong>
+                <span>Ghi chú và xác nhận nhập kho</span>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Ghi chú phiếu nhập</label>
+                <input type="text" name="note" class="form-control" placeholder="Ví dụ: Nông sản tươi chuẩn VietGAP đợt 1...">
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                <span style="font-size: 10px; color: #6b7280;">
+                    * Hệ thống sẽ tự sinh mã Lô <strong>LOT-[MÃ_SP]-[YYMMDD]-[STT]</strong> duy nhất.
+                </span>
+                <button type="submit" class="btn btn-success" style="padding: 10px 20px;">
+                    ✔ Xác nhận Nhập Kho & Sinh Lô
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- CỘT PHẢI: HƯỚNG DẪN QUY TRÌNH & NGUYÊN TẮC QUẢN LÝ LÔ -->
+    <div>
+        <div class="card" style="border-left: 4px solid #258451;">
+            <h3 class="card-title">📌 Quy định Lô Hàng Nông Sản</h3>
+            <ul style="font-size: 11px; color: #4b5563; padding-left: 18px; line-height: 1.8; margin: 0;">
+                <li>Mỗi lần nhập sẽ phát sinh <strong>1 mã Lô duy nhất</strong> để theo dõi vòng đời sản phẩm.</li>
+                <li>Thời hạn sử dụng (EXP) là căn cứ quan trọng nhất để hệ thống kích hoạt thuật toán xuất kho <strong>FEFO (First Expired, First Out)</strong>.</li>
+                <li>Sau khi nhập kho thành công, thủ kho có thể in mã vạch/QR Code để dán lên từng pallet/thùng hàng.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- BẢNG LỊCH SỬ CÁC PHIẾU NHẬP KHO GẦN ĐÂY -->
+<div class="card" style="margin-top: 10px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <h3 class="card-title" style="margin: 0;">Lịch sử Phiếu Nhập Kho</h3>
+        <a href="{% url 'batches' %}" class="btn btn-outline btn-sm">Xem danh sách Lô hàng tồn kho →</a>
+    </div>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Mã Phiếu Nhập</th>
+                <th>Nhà cung cấp</th>
+                <th>Thời gian nhập</th>
+                <th>Người tạo phiếu</th>
+                <th>Tổng giá trị</th>
+                <th>Ghi chú</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in receipts %}
+            <tr>
+                <td><strong style="color: #258451;">{{ r.code }}</strong></td>
+                <td>{{ r.supplier.name }}</td>
+                <td>{{ r.created_at|date:"d/m/Y H:i" }}</td>
+                <td><small>{{ r.created_by.username|default:"Hệ thống" }}</small></td>
+                <td><strong>{{ r.total_amount|floatformat:0 }} đ</strong></td>
+                <td>{{ r.note|default:"--" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" style="text-align: center; color: #9ca3af; padding: 20px;">
+                    Chưa có phiếu nhập nào.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

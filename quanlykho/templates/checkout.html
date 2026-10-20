@@ -1,0 +1,235 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Xác Nhận Đặt Hàng Nông Sản | Nông Sản Xanh</title>
+    <link rel="stylesheet" href="{% static 'core/dashboard.css' %}">
+    <style>
+        :root {
+            --primary: #258451;
+            --primary-dark: #1b6840;
+            --border: #e5e7eb;
+        }
+        body { background: #f4f6f4; margin: 0; font-family: 'Segoe UI', -apple-system, sans-serif; color: #1f2937; }
+        .checkout-container { max-width: 960px; margin: 30px auto; padding: 0 20px; }
+        
+        /* THANH TIẾN TRÌNH 2 BƯỚC */
+        .checkout-steps {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #9ca3af;
+        }
+        .step-item.active {
+            color: var(--primary);
+        }
+        .step-num {
+            width: 26px; height: 26px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-size: 12px;
+            font-weight: 800;
+            background: #e5e7eb;
+            color: #4b5563;
+        }
+        .step-item.active .step-num {
+            background: var(--primary);
+            color: #ffffff;
+        }
+        .step-divider {
+            width: 40px;
+            height: 2px;
+            background: #d1d5db;
+        }
+
+        .checkout-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; }
+        .box { background: #ffffff; border-radius: 14px; padding: 24px; border: 1px solid #edf0ed; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+        .box-title { font-size: 16px; font-weight: 800; color: #111827; margin: 0 0 16px; display: flex; align-items: center; gap: 8px; }
+        .form-group { margin-bottom: 14px; }
+        .form-label { display: block; margin-bottom: 6px; font-size: 12px; font-weight: 600; color: #374151; }
+        .form-control { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 12px; box-sizing: border-box; }
+        .form-control:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,132,81,0.15); }
+
+        .info-notice {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-top: 18px;
+            font-size: 12px;
+            color: #166534;
+            line-height: 1.6;
+        }
+
+        .btn-proceed {
+            width: 100%;
+            background: var(--primary);
+            color: #fff;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-proceed:hover { background: var(--primary-dark); }
+
+        @media (max-width: 768px) {
+            .checkout-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="checkout-container">
+        <!-- HEADER ĐIỀU HƯỚNG -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <a href="{% url 'store' %}" style="text-decoration: none; color: var(--primary); font-size: 13px; font-weight: 700;">
+                ← Quay lại Cửa hàng nông sản
+            </a>
+            <span style="font-size: 11px; color: #6b7280; font-weight: 600;">HỆ THỐNG XÁC NHẬN ĐƠN HÀNG XUẤT KHO FEFO</span>
+        </div>
+
+        <!-- TIẾN TRÌNH THANH TOÁN 2 BƯỚC -->
+        <div class="checkout-steps">
+            <div class="step-item active">
+                <span class="step-num">1</span>
+                <span>Điền thông tin nhận hàng</span>
+            </div>
+            <div class="step-divider"></div>
+            <div class="step-item">
+                <span class="step-num">2</span>
+                <span>Thanh toán mã VietQR / COD</span>
+            </div>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="product_id" value="{{ product.id }}">
+            <input type="hidden" name="order_code" value="{{ order_code }}">
+
+            <div class="checkout-grid">
+                <!-- CỘT 1: THÔNG TIN GIAO HÀNG (BƯỚC 1 - CHƯA HIỂN THỊ PHƯƠNG THỨC THANH TOÁN THEO YÊU CẦU) -->
+                <div class="box">
+                    <h2 class="box-title">📍 Bước 1: Thông Tin Nhận Hàng & Xuất Kho</h2>
+
+                    <div class="form-group">
+                        <label class="form-label">Họ tên người nhận / Đại lý đối tác (*)</label>
+                        <input type="text" name="customer_name" class="form-control" 
+                               value="{{ default_name }}" 
+                               placeholder="Ví dụ: Anh Hoàng (Cửa hàng Nông sản Sạch)" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Số điện thoại liên hệ nhận hàng (*)</label>
+                        <input type="text" name="customer_phone" class="form-control" 
+                               value="{{ default_phone }}" 
+                               placeholder="Ví dụ: 0912.345.678" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Địa chỉ giao hàng chi tiết (*)</label>
+                        <input type="text" name="shipping_address" class="form-control" 
+                               value="{{ default_address }}"
+                               placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành..." required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Ghi chú giao hàng (nếu có)</label>
+                        <input type="text" name="note" class="form-control" placeholder="Ví dụ: Giao giờ hành chính, gọi trước 15 phút, yêu cầu bảo quản lạnh...">
+                    </div>
+
+                    <!-- HƯỚNG DẪN QUY TRÌNH THANH TOÁN RÕ RÀNG -->
+                    <div class="info-notice">
+                        <strong>🛡️ Thông báo phương thức thanh toán:</strong>
+                        <p style="margin: 4px 0 0;">
+                            Theo quy trình bán hàng chuẩn, <strong>phương thức thanh toán và Mã quét VietQR</strong> sẽ được hệ thống hiển thị ngay sau khi quý khách bấm <em>"Xác nhận đặt hàng"</em>. Quý khách có thể lựa chọn quét mã VietQR tự động hoặc thanh toán khi nhận hàng (COD).
+                        </p>
+                    </div>
+                </div>
+
+                <!-- CỘT 2: TÓM TẮT ĐƠN HÀNG VÀ TÍNH TIỀN -->
+                <div class="box" style="height: fit-content;">
+                    <h2 class="box-title">🛒 Tóm Tắt Đơn Hàng</h2>
+
+                    <div style="display: flex; gap: 14px; align-items: center; padding-bottom: 15px; border-bottom: 1px solid #edf0ed;">
+                        {% if product.image_url %}
+                            <img src="{{ product.image_url }}" alt="{{ product.name }}" style="width: 70px; height: 70px; border-radius: 10px; object-fit: cover;">
+                        {% endif %}
+                        <div>
+                            <strong style="font-size: 15px; color: #111827;">{{ product.name }}</strong>
+                            <div style="font-size: 11px; color: #258451; font-weight: 700; margin-top: 2px;">
+                                Mã: {{ product.code }} | Nhóm: {{ product.category.name }}
+                            </div>
+                            <div style="font-size: 12px; color: #4b5563; margin-top: 4px;">
+                                Đơn giá: <strong>{{ product.price|floatformat:0 }} đ / {{ product.unit }}</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 15px;">
+                        <label class="form-label">Số lượng đặt mua ({{ product.unit }}):</label>
+                        <input type="number" step="1" min="1" max="{{ product.total_stock }}" 
+                               name="qty" id="qty_input" class="form-control" value="{{ qty }}" 
+                               oninput="updateTotal(this.value, {{ product.price }})" required>
+                        <div style="display: flex; justify-content: space-between; margin-top: 4px; font-size: 10px; color: #6b7280;">
+                            <span>Tồn kho khả dụng: <strong style="color: #166534;">{{ product.total_stock }} {{ product.unit }}</strong></span>
+                            <span>Mã đơn: <strong>{{ order_code }}</strong></span>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 18px; padding: 15px; background: #f9fafb; border-radius: 10px; border: 1px solid #e5e7eb;">
+                        <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px;">
+                            <span style="color: #6b7280;">Tạm tính:</span>
+                            <strong id="subtotal_text" style="color: #1f2937;">{{ total|floatformat:0 }} đ</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px;">
+                            <span style="color: #6b7280;">Phí vận chuyển & kho lạnh:</span>
+                            <span style="color: #166534; font-weight: 700;">Miễn phí</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 15px; font-weight: 800; border-top: 1px solid #e5e7eb; padding-top: 10px; color: #dc2626;">
+                            <span>TỔNG CỘNG:</span>
+                            <span id="total_text">{{ total|floatformat:0 }} VNĐ</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-proceed">
+                        <span>Xác Nhận Đặt Hàng & Chuyển Sang Thanh Toán</span> →
+                    </button>
+                    <p style="text-align: center; font-size: 11px; color: #9ca3af; margin: 10px 0 0;">
+                        🔒 Đơn hàng được bảo mật và khởi tạo trạng thái tức thì
+                    </p>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function updateTotal(qty, price) {
+            const q = parseFloat(qty) || 0;
+            const t = q * price;
+            const formatted = new Intl.NumberFormat('vi-VN').format(t) + ' đ';
+            const formattedVND = new Intl.NumberFormat('vi-VN').format(t) + ' VNĐ';
+            document.getElementById('subtotal_text').innerText = formatted;
+            document.getElementById('total_text').innerText = formattedVND;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+TRƯỜNG ĐẠI HỌC TÀI NGUYÊN VÀ MÔI TRƯỜNG TP.HCM
+KHOA: CÔNG NGHỆ THÔNG TIN
+NGUYỄN NGỌC CÁT TƯỜNG
+ĐỀ CƯƠNG ĐỒ ÁN CHUYÊN NGÀNH
+TIN HỌC MÔI TRƯỜNG
+          
+TP. Hồ Chí Minh, tháng 8 năm 2026
+TRƯỜNG ĐẠI HỌC TÀI NGUYÊN VÀ MÔI TRƯỜNG TP.HCM
+KHOA: CÔNG NGHỆ THÔNG TIN
+ 
+XÂY DỰNG PHẦN MỀM QUẢN LÝ TỒN KHO NÔNG SẢN
+Giảng viên hướng dẫn : ThS. Ngô Tấn Khai
+Sinh viên thực hiện: Nguyễn Ngọc Cát Tường
+Mã số sinh viên: 1250080226
+Lớp: 12_ĐH_THMT
+Khoá:   2023 – 2027
+TP. Hồ Chí Minh, tháng 8 năm 2026
+Mở đầu
+Cơ sở khoa học và tính thực tiễn của đề tài
+Trong ngành nông nghiệp và phân phối nông sản hiện nay, công tác quản lý kho hàng đóng vai trò quyết định đến chất lượng sản phẩm và hiệu quả kinh doanh. Khác với các mặt hàng tiêu dùng thông thường, nông sản có đặc thụ là thời gian bảo quản ngắn, dễ bị hư hỏng, biến chất theo điều kiện môi trường và chịu ảnh hưởng lớn bởi vòng đời của từng lô hàng.Tại nhiều doanh nghiệp, hợp tác xã và kho nông sản quy mô vừa và nhỏ, việc quản lý nhập – xuất – tồn vẫn chủ yếu thực hiện qua sổ sách thủ công hoặc các bảng tính rời rạc. Phương thức này dẫn đến nhiều bất cập: khó theo dõi hạn sử dụng theo từng mẻ/lô hàng (Batch/Lot), không kiểm soát kịp thời tỷ lệ hao hụt/hư hỏng, chậm trễ trong việc áp dụng nguyên tắc xuất kho ưu tiên hàng sắp hết hạn (FEFO - First Expired, First Out), và thiếu cảnh báo sớm về tồn kho an toàn. Bên cạnh đó, việc trao đổi thông tin với đối tác kinh doanh hoặc khách mua sỉ về lượng hàng sẵn có trong kho còn mất nhiều thời gian tra cứu.  Xuất phát từ thực tế đó, đề tài “Xây dựng phần mềm quản lý tồn kho nông sản” được triển khai nhằm phát triển một hệ thống Web quản lý tập trung toàn bộ quy trình vận hành kho nông sản. Hệ thống giải quyết các nghiệp vụ: quản lý danh mục nông sản, lô hàng, hạn sử dụng, nhà cung cấp, vị trí kho, quy trình nhập kho, xuất kho, kiểm kê định kỳ, ghi nhận hao hụt và xuất các chứng từ, báo cáo thống kê.  Đề tài áp dụng các kiến thức chuyên ngành Công nghệ phần mềm bao gồm: phân tích thiết kế hệ thống hướng đối tượng, kiến trúc phân tách Frontend – Backend, thiết kế cơ sở dữ liệu quan hệ, xây dựng RESTful API và xác thực/phân quyền người dùng.
+Mục đích nghiên cứu
+Nghiên cứu & Thiết kế: Phân tích quy trình quản lý tồn kho nông sản thực tế, xây dựng kiến trúc phần mềm chuẩn mực theo mô hình Client-Server phân tách Frontend – Backend.
+Công nghệ ứng dụng: Sử dụng ngôn ngữ Java và framework Spring Boot xây dựng Backend (RESTful API); sử dụng React phát triển giao diện người dùng; sử dụng Microsoft SQL Server quản lý cơ sở dữ liệu quan hệ; áp dụng Spring Security và JWT trong xác thực, phân quyền.
+Nghiệp vụ cốt lõi: Quản lý danh mục nông sản, phân loại theo đặc tính bảo quản; quản lý nhập kho theo mẻ/lô (Batch No, ngày sản xuất, hạn sử dụng); quản lý xuất kho theo chiến lược FEFO/FIFO; quản lý vị trí lưu trữ trong kho; ghi nhận kiểm kê và tỷ lệ hao hụt; xuất phiếu nhập/xuất kho PDF và báo cáo công nợ nhà cung cấp.
+Đối tượng và phạm vi nghiên cứu:
+Đối tượng nghiên cứu: Quy trình nghiệp vụ quản lý kho nông sản (quản lý lô hàng, hạn dùng, nhập/xuất kho, kiểm kê, tỷ lệ hao hụt); Kỹ thuật phân tích thiết kế hệ thống, kiến trúc RESTful API, React, Spring Boot, SQL Server và JWT.
+Phạm vi hệ thống:
+Khu vực công khai (Khách/Đối tác): Xem danh mục nông sản hiện có, quy cách đóng gói, tiêu chuẩn chất lượng và thông tin liên hệ.
+Cổng Thủ kho / Nhân viên: Ghi nhận phiếu nhập kho theo lô, in/xuất mã vạch lô hàng, lập phiếu xuất kho, cập nhật vị trí lưu trữ, ghi nhận kết quả kiểm kê và báo cáo nông sản hỏng/hao hụt.
+Cổng Quản trị viên / Chủ doanh nghiệp: Quản lý danh mục, quản lý đối tác/nhà cung cấp, phân quyền tài khoản, duyệt phiếu nhập/xuất lớn, theo dõi Dashboard báo cáo doanh thu/tồn kho và xuất báo cáo PDF/Excel.
+Phạm vi giới hạn: Hệ thống tập trung vào nghiệp vụ quản lý kho nội bộ và giao dịch xuất/nhập, không triển khai thanh toán trực tuyến qua cổng ngân hàng hoặc tích hợp thiết bị phần cứng IoT cảm biến nhiệt độ.
+Phương pháp nghiên cứu
+Phương pháp nghiên cứu lý thuyết: Tổng hợp tài liệu về thiết kế hệ thống thông tin, kiến trúc Web API, chuẩn hóa cơ sở dữ liệu quan hệ, cơ chế xác thực JWT, tài liệu kỹ thuật Spring Boot và React.
+Phương pháp thực nghiệm: Phân tích Use Case, thiết kế sơ đồ UML (Activity, Sequence, Class Diagram) và sơ đồ ERD. Lập trình ứng dụng thực tế bằng Spring Boot, React, SQL Server; kiểm thử API bằng Postman và kiểm thử liên thông giao diện người dùng.
+Thời gian thực hiện
+Từ ngày 24/8/2026 đến 04/12/2026
+Kết quả dự kiến đạt được
+Sản phẩm phần mềm: Web application hoàn chỉnh quản lý tồn kho nông sản đáp ứng đầy đủ quy trình nhập – xuất – kiểm kê – quản lý hạn dùng theo nguyên tắc FEFO.
+Báo cáo & Thống kê: Dashboard thống kê tổng tồn kho, giá trị hàng tồn, tỷ lệ hao hụt theo tháng; chức năng xuất phiếu nhập/xuất kho và báo cáo tồn kho dạng PDF/Excel.
+Tài liệu kỹ thuật: Báo cáo đồ án đạt chuẩn HCMUNRE bao gồm đặc tả yêu cầu, bộ sơ đồ thiết kế UML, ERD và kịch bản kiểm thử.
+Nội dung
+LỜI MỞ ĐẦU
+Chương 1. TỔNG QUAN TÀI LIỆU
+Tổng quan về quản lý kho nông sản
+ Khảo sát một số hệ thống quản lý kho hiện hành
+ Phương pháp quản lý lô hàng và nguyên tắc xuất kho FEFO/FIFO
+ Công nghệ sử dụng
+ Công nghệ sử dụng (Java Spring Boot, React, SQL Server, JWT)
+Chương 2. PHƯƠNG PHÁP THỰC HIỆN
+2.1 Phân tích yêu cầu hệ thống
+2.2 Phân tích nghiệp vụ quản lý lô hàng và tồn kho nông sản
+2.3 Sơ đồ Use Case
+2.4 Sơ đồ Activity
+2.5 Sơ đồ Sequence
+2.6 Sơ đồ Class 
+2.7 Thiết kế cơ sở dữ liệu
+2.8 Kiến trúc hệ thống
+2.9 Thiết kế giao diện
+2.10 Thiết kế quy trình quản lý lô hàng và chiến lược xuất kho FEFO
+2.11 Thiết kế phân hệ báo cáo, thống kê và xuất chứng từ (PDF/Excel)
+Chương 3. CÀI ĐẶT THỰC NGHIỆM
+3.1 Môi trường cài đặt 
+3.2 Môi trường Backend
+3.3 Môi trường Frontend
+3.4 Cài đặt chức năng quản lý danh mục nông sản và nhà cung cấp
+3.5 Cài đặt chức năng quản lý nhập kho và quản lý lô hàng
+3.6 Cài đặt chức năng xuất kho theo nguyên tắc FEFO và quản lý vị trí kho
+3.7 Cài đặt chức năng kiểm kê và ghi nhận hao hụt nông sản
+3.8 Cài đặt phân hệ báo cáo, xuất phiếu nhập/xuất kho (PDF/Excel)
+3.9 Xây dựng Dashboard thống kê
+3.10 Kiểm thử hệ thống
+3.11 Kết quả thực nghiệm
+KẾT LUẬN
+Kết quả đạt được
+Hạn chế
+Hướng phát triển
+DỰ KIẾN KẾ HOẠCH THỰC HIỆN
+Thời gian
+Nội dung
+Địa điểm thực hiện
+Tuần 1 và tuần 2
+Khảo sát thực tế nghiệp vụ kho nông sản, xác định phạm vi đề tài, đăng ký GVHD và tên đề tài.
+Trường ĐH Tài Nguyên Và Môi Trường TP Hồ Chí Minh
+Tuần 3
+Hoàn thiện và nộp đề cương; thu thập tài liệu tham khảo; xác định yêu cầu chức năng và phi chức năng.
+Trường ĐH Tài Nguyên Và Môi Trường TP Hồ Chí Minh
+Tuần 4
+Phân tích nghiệp vụ, xây dựng Use Case, Sequence Diagram, Activity Diagram, thiết kế ERD cơ sở dữ liệu
+Trường ĐH Tài Nguyên Và Môi Trường TP Hồ Chí Minh
+Tuần 5
+Khởi tạo dự án Spring Boot, cấu hình SQL Server, xây dựng module xác thực JWT và phân quyền.
+Trường ĐH Tài Nguyên Và Môi Trường TP Hồ Chí Minh
+Tuần 6
+Khởi tạo Frontend React; xây dựng giao diện chung, trang đăng nhập và giao diện công khai sản phẩm.
+Trường ĐH Tài Nguyên Và Môi Trường TP Hồ Chí Minh
+Tuần 7
+Phát triển chức năng quản lý danh mục nông sản, nhà cung cấp, đối tác và vị trí lưu trữ trong kho.
+Trường ĐH Tài Nguyên Và Môi Trường TP Hồ Chí Minh
+Tuần 8
+Xây dựng phân hệ Quản lý Nhập kho theo mẻ/lô, ghi nhận hạn sử dụng và xuất phiếu nhập.
+Trường ĐH Tài Nguyên Và Môi Trường TP Hồ Chí Minh
+Tuần 9
+Xây dựng phân hệ Quản lý Xuất kho áp dụng thuật toán FEFO; quản lý phiếu kiểm kê và ghi nhận hao hụt.
+Trường ĐH Tài Nguyên Và Môi Trường TP Hồ Chí Minh
+Tuần 10
+Xây dựng phân hệ báo cáo, thống kê dữ liệu và xuất tài liệu phiếu nhập/xuất kho dạng PDF/Excel.
+Trường ĐH Tài Nguyên Và Môi Trường TP Hồ Chí Minh
+Tuần 11
+Lập trình Dashboard thống kê biểu đồ tồn kho, giá trị tồn, tỷ lệ hao hụt; kiểm thử liên thông toàn hệ thống.
+Trường ĐH Tài Nguyên Và Môi Trường TP Hồ Chí Minh
+Tuần 12
+Viết báo cáo: Lời mở đầu, chương 1 và chương 2 
+Trường ĐH Tài Nguyên Và Môi Trường TP Hồ Chí Minh
+Tuần 13
+Viết Chương 3 (Cài đặt thực nghiệm & Kết quả), Kết luận; rà soát và hoàn thiện toàn bộ báo cáo.
+Trường ĐH Tài Nguyên Và Môi Trường TP Hồ Chí Minh
+Tuần 14
+Chuẩn bị slide, kịch bản demo sản phẩm và báo cáo trước Hội đồng.
+Trường ĐH Tài Nguyên Và Môi Trường TP Hồ Chí Minh
+Tuần 15
+Chỉnh sửa báo cáo, hoàn thiện source code theo góp ý của Hội đồng và nộp sản phẩm cuối cùng.
+Trường ĐH Tài Nguyên Và Môi Trường TP Hồ Chí Minh
+TÀI LIỆU THAM KHẢO
+[1] Spring, Spring Boot Reference Documentation, Spring.
+[2] Meta Open Source, React Documentation, React.
+[3] Microsoft, SQL Server Technical Documentation, Microsoft Learn.
+[4] Apache Software Foundation, Apache POI - Java API for Microsoft Documents, Poi.apache.org.
+[5] Spring, Spring Security Reference Documentation, Spring.
+CÁC CƠ QUAN, ĐƠN VỊ CẦN LIÊN HỆ
+Khoa Công nghệ Thông tin – Trường Đại Học Tài Nguyên Và Môi Trường TP Hồ Chí Minh, 236B Lê Văn Sỹ, Phường Tân Sơn Hòa, TP. Hồ Chí Minh. 
+GIẢNG VIÊN HƯỚNG DẪNNGƯỜI LẬP ĐỀ CƯƠNG
+(ký và ghi rõ họ tên)
+TRƯỞNG BỘ MÔN

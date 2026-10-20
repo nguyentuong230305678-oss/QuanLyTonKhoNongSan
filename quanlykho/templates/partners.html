@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block title %}Quản lý Đối tác & Nhà cung cấp | Nông Sản Xanh{% endblock %}
+{% block nav_partners %}active{% endblock %}
+{% block breadcrumb %}Quản lý Đối tác & Nhà cung cấp{% endblock %}
+
+{% block content %}
+<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+    <div>
+        <h1 style="font-size: 20px; font-weight: 800; margin: 0 0 4px;">Đối tác & Nhà Cung Cấp</h1>
+        <p style="margin: 0; color: #6b7280; font-size: 11px;">Quản lý thông tin nhà vườn/hợp tác xã cung ứng và khách mua sỉ nông sản</p>
+    </div>
+</div>
+
+<div class="grid-2">
+    <!-- CỘT TRÁI: DANH SÁCH NHÀ CUNG CẤP -->
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h2 class="card-title" style="margin: 0; color: #1b6840;">🚜 Nhà Cung Cấp / Hợp Tác Xã</h2>
+        </div>
+
+        {% if role == 'ADMIN' or role == 'WAREHOUSE_MANAGER' %}
+        <form method="POST" style="background: #f0f7f2; padding: 12px; border-radius: 8px; margin-bottom: 15px;">
+            {% csrf_token %}
+            <input type="hidden" name="partner_type" value="supplier">
+            <div class="grid-2">
+                <input type="text" name="name" class="form-control" placeholder="Tên Nhà cung cấp..." required>
+                <input type="text" name="phone" class="form-control" placeholder="Điện thoại liên hệ...">
+            </div>
+            <div style="display: flex; gap: 8px; margin-top: 8px;">
+                <input type="text" name="address" class="form-control" placeholder="Địa chỉ vùng trồng/huyện..." style="flex: 1;">
+                <button type="submit" class="btn btn-success btn-sm">+ Thêm NCC</button>
+            </div>
+        </form>
+        {% endif %}
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Tên Nhà cung cấp</th>
+                    <th>Điện thoại</th>
+                    <th>Địa chỉ</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in suppliers %}
+                <tr>
+                    <td><strong>{{ s.name }}</strong></td>
+                    <td>{{ s.phone|default:"--" }}</td>
+                    <td><small>{{ s.address|default:"--" }}</small></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- CỘT PHẢI: DANH SÁCH KHÁCH HÀNG MUA SỈ -->
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h2 class="card-title" style="margin: 0; color: #2563eb;">🏪 Khách Hàng / Siêu Thị / Chợ Đầu Mối</h2>
+        </div>
+
+        {% if role == 'ADMIN' or role == 'WAREHOUSE_MANAGER' %}
+        <form method="POST" style="background: #eff6ff; padding: 12px; border-radius: 8px; margin-bottom: 15px;">
+            {% csrf_token %}
+            <input type="hidden" name="partner_type" value="partner">
+            <div class="grid-2">
+                <input type="text" name="name" class="form-control" placeholder="Tên Đối tác / Siêu thị..." required>
+                <input type="text" name="phone" class="form-control" placeholder="Số điện thoại...">
+            </div>
+            <div style="display: flex; gap: 8px; margin-top: 8px;">
+                <input type="text" name="address" class="form-control" placeholder="Địa chỉ cửa hàng/chợ..." style="flex: 1;">
+                <button type="submit" class="btn btn-primary btn-sm">+ Thêm Đối Tác</button>
+            </div>
+        </form>
+        {% endif %}
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Tên Đối Tác</th>
+                    <th>Điện thoại</th>
+                    <th>Địa chỉ giao hàng</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in partners %}
+                <tr>
+                    <td><strong>{{ p.name }}</strong></td>
+                    <td>{{ p.phone|default:"--" }}</td>
+                    <td><small>{{ p.address|default:"--" }}</small></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

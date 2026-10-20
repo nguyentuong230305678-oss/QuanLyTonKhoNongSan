@@ -1,0 +1,161 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Đăng ký tài khoản Khách hàng | Nông Sản Xanh</title>
+    <link rel="stylesheet" href="{% static 'core/dashboard.css' %}">
+    <style>
+        :root {
+            --primary: #258451;
+            --primary-dark: #1b6840;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0; padding: 0;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+            background: #f4f6f4;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-main);
+        }
+        .register-card {
+            width: 100%;
+            max-width: 520px;
+            margin: 24px;
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 40px 36px;
+            box-shadow: 0 15px 35px -10px rgba(27, 104, 64, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.04);
+        }
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .logo-badge {
+            width: 42px; height: 42px;
+            object-fit: contain;
+        }
+        h2 { margin: 0 0 6px; font-size: 22px; font-weight: 800; }
+        p { margin: 0 0 20px; font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .form-group { margin-bottom: 15px; }
+        .form-label { display: block; margin-bottom: 6px; font-size: 12px; font-weight: 600; color: #374151; }
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 12px;
+            background: #fafafa;
+        }
+        .form-control:focus {
+            outline: none;
+            background: #fff;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 132, 81, 0.15);
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .btn-submit:hover { background: var(--primary-dark); }
+        .alert-error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            margin-bottom: 18px;
+        }
+        .login-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #6b7280;
+        }
+        .login-link a { color: var(--primary); font-weight: 700; text-decoration: none; }
+        .login-link a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="register-card">
+        <div class="header-logo">
+            <img class="logo-badge" src="{% static 'core/logo.svg' %}" alt="">
+            <div>
+                <strong style="font-size: 16px; color: var(--primary-dark);">Nông Sản Xanh</strong>
+                <div style="font-size: 9px; color: #9ca3af; font-weight: 700;">ĐĂNG KÝ TÀI KHOẢN KHÁCH HÀNG / ĐẠI LÝ</div>
+            </div>
+        </div>
+
+        <h2>Tạo tài khoản mua hàng</h2>
+        <p>Đăng ký tài khoản để theo dõi đơn đặt hàng sỉ, giá chiết khấu nông sản chính vụ và nhận hàng nhanh chóng.</p>
+
+        {% if messages %}
+            {% for m in messages %}
+                <div class="alert-error">{{ m }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label class="form-label">Tên đăng nhập (*)</label>
+                <input type="text" name="username" class="form-control" placeholder="Tên đăng nhập viết liền không dấu..." required autofocus>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label class="form-label">Mật khẩu (*)</label>
+                    <input type="password" name="password" class="form-control" placeholder="Nhập mật khẩu..." required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Xác nhận mật khẩu (*)</label>
+                    <input type="password" name="confirm_password" class="form-control" placeholder="Nhập lại mật khẩu..." required>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label class="form-label">Họ và tên / Đơn vị (*)</label>
+                    <input type="text" name="full_name" class="form-control" placeholder="Họ tên hoặc tên Đại lý/Siêu thị..." required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Số điện thoại nhận hàng (*)</label>
+                    <input type="text" name="phone" class="form-control" placeholder="Ví dụ: 0912345678" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Địa chỉ giao hàng</label>
+                <input type="text" name="address" class="form-control" placeholder="Số nhà, đường, phường/xã, quận/huyện...">
+            </div>
+
+            <button type="submit" class="btn-submit">Hoàn tất Đăng Ký & Bắt Đầu Mua Hàng →</button>
+        </form>
+
+        <div class="login-link">
+            Đã có tài khoản? <a href="{% url 'login' %}">Đăng nhập tại đây</a>
+        </div>
+    </div>
+</body>
+</html>

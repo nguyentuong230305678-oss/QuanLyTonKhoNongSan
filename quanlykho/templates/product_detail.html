@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}{{ product.name }} | Chi Tiết Nông Sản | Nông Sản Xanh{% endblock %}
+{% block nav_products %}active{% endblock %}
+{% block breadcrumb %}
+<a href="{% url 'products' %}" style="color: #6b7280; text-decoration: none;">Nông sản</a> / <span>{{ product.name }}</span>
+{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <p class="eyebrow">CHI TIẾT NÔNG SẢN & KIỂM SOÁT LÔ HÀNG</p>
+            <h1 style="margin-bottom: 4px;">{{ product.name }} <span>({{ product.code }})</span></h1>
+            <p class="subheading">Thông tin vùng trồng, tiêu chuẩn chất lượng, nhà cung cấp và tồn kho theo hạn dùng (FEFO).</p>
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <a href="{% url 'products' %}" class="btn btn-outline">← Danh sách nông sản</a>
+            <a href="{% url 'store' %}" class="btn btn-outline" target="_blank">🌿 Xem tại Cửa hàng ↗</a>
+        </div>
+    </div>
+</div>
+
+<!-- LƯỚI CHI TIẾT SẢN PHẨM -->
+<div style="display: grid; grid-template-columns: minmax(320px, 420px) 1fr; gap: 28px; margin-bottom: 30px;">
+    <!-- CỘT ẢNH & THẺ CHẤT LƯỢNG -->
+    <div class="card" style="padding: 20px;">
+        <div style="position: relative; width: 100%; height: 320px; border-radius: 12px; overflow: hidden; background: #f3f4f6;">
+            {% if product.image_url %}
+                <img src="{{ product.image_url }}" alt="{{ product.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+            {% else %}
+                <div style="display: grid; place-items: center; height: 100%; color: #9ca3af; font-size: 13px;">
+                    (Chưa có hình ảnh nông sản)
+                </div>
+            {% endif %}
+
+            <div style="position: absolute; top: 12px; left: 12px; display: flex; flex-direction: column; gap: 6px;">
+                <span class="badge" style="background: #258451; color: #fff; font-size: 11px; padding: 5px 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.15);">
+                    ✓ {{ product.quality_standard|default:"VietGAP Chuẩn Sạch" }}
+                </span>
+                <span class="badge" style="background: #f59e0b; color: #fff; font-size: 11px; padding: 5px 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.15);">
+                    {% if product.season == 'WINTER' %}❄️ Mùa Đông (Chính vụ)
+                    {% elif product.season == 'SPRING' %}🌸 Mùa Xuân
+                    {% elif product.season == 'SUMMER' %}☀️ Mùa Hạ
+                    {% elif product.season == 'AUTUMN' %}🍂 Mùa Thu
+                    {% else %}🌿 Quanh năm
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+
+        <div style="margin-top: 18px; padding-top: 15px; border-top: 1px solid #edf0ed;">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px;">
+                <span style="font-size: 12px; color: #6b7280;">Giá niêm yết bán lẻ:</span>
+                <div>
+                    <strong style="font-size: 24px; color: #258451; font-weight: 800;">{{ product.price|floatformat:0 }} đ</strong>
+                    <span style="font-size: 12px; color: #6b7280;">/ {{ product.unit }}</span>
+                </div>
+            </div>
+
+            <!-- NÚT MUA HOẶC XUẤT KHO -->
+            {% if user.is_authenticated %}
+                <div style="display: grid; gap: 8px;">
+                    <a href="{% url 'checkout' %}?product_id={{ product.id }}&qty=10" class="btn btn-success" style="padding: 12px; font-size: 13px; font-weight: 700;">
+                        <span>🛒</span> Đặt mua ngay (10 {{ product.unit }})
+                    </a>
+                    {% if role != 'CUSTOMER' %}
+                    <a href="{% url 'outbound' %}?product_id={{ product.id }}" class="btn btn-primary" style="padding: 10px; font-size: 12px;">
+                        <span>⇄</span> Tạo phiếu xuất kho FEFO
+                    </a>
+                    {% endif %}
+                </div>
+            {% else %}
+                <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 14px; text-align: center;">
+                    <p style="margin: 0 0 10px; font-size: 12px; color: #92400e; font-weight: 600;">
+                        🔒 Bạn cần đăng nhập tài khoản để đặt mua nông sản này!
+                    </p>
+                    <a href="{% url 'login' %}?next={% url 'checkout' %}?product_id={{ product.id }}" class="btn btn-success" style="width: 100%; box-sizing: border-box; padding: 10px; font-weight: 700;">
+                        Đăng nhập để đặt hàng →
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- CỘT THÔNG SỐ VẬN HÀNH & NGUỒN GỐC -->
+    <div>
+        <div class="card" style="margin-bottom: 20px;">
+            <h3 class="card-title">🌱 Thông tin Vùng trồng & Tiêu chuẩn chất lượng</h3>
+            
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 20px;">
+                <div style="background: #f8faf8; padding: 14px; border-radius: 8px; border: 1px solid #edf0ed;">
+                    <div style="font-size: 10px; color: #6b7280; text-transform: uppercase; font-weight: 700;">Vùng trồng / Xuất xứ</div>
+                    <div style="font-size: 14px; font-weight: 800; color: #1f2937; margin-top: 4px;">
+                        📍 {{ product.origin|default:"Việt Nam" }}
+                    </div>
+                </div>
+
+                <div style="background: #f8faf8; padding: 14px; border-radius: 8px; border: 1px solid #edf0ed;">
+                    <div style="font-size: 10px; color: #6b7280; text-transform: uppercase; font-weight: 700;">Tiêu chuẩn chất lượng</div>
+                    <div style="font-size: 14px; font-weight: 800; color: #258451; margin-top: 4px;">
+                        🏅 {{ product.quality_standard|default:"VietGAP" }}
+                    </div>
+                </div>
+
+                <div style="background: #f8faf8; padding: 14px; border-radius: 8px; border: 1px solid #edf0ed;">
+                    <div style="font-size: 10px; color: #6b7280; text-transform: uppercase; font-weight: 700;">Cơ sở nhập / Nhà cung cấp</div>
+                    <div style="font-size: 13px; font-weight: 700; color: #1f2937; margin-top: 4px;">
+                        🏢 {{ product.supplier.name|default:"Hợp tác xã Nông sản địa phương" }}
+                    </div>
+                    {% if product.supplier.phone %}
+                        <div style="font-size: 10px; color: #6b7280;">SĐT: {{ product.supplier.phone }}</div>
+                    {% endif %}
+                </div>
+
+                <div style="background: #f8faf8; padding: 14px; border-radius: 8px; border: 1px solid #edf0ed;">
+                    <div style="font-size: 10px; color: #6b7280; text-transform: uppercase; font-weight: 700;">Danh mục nông sản</div>
+                    <div style="font-size: 13px; font-weight: 700; color: #1f2937; margin-top: 4px;">
+                        📂 {{ product.category.name }}
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 20px;">
+                <div style="background: #eff6ff; padding: 12px; border-radius: 8px; border: 1px solid #bfdbfe;">
+                    <div style="font-size: 10px; color: #1e40af; font-weight: 700;">TỔN KHO KHẢ DỤNG</div>
+                    <div style="font-size: 16px; font-weight: 800; color: #1e3a8a; margin-top: 4px;">
+                        {{ product.total_stock }} {{ product.unit }}
+                    </div>
+                </div>
+
+                <div style="background: #fef3c7; padding: 12px; border-radius: 8px; border: 1px solid #fde68a;">
+                    <div style="font-size: 10px; color: #92400e; font-weight: 700;">ĐỊNH MỨC AN TOÀN</div>
+                    <div style="font-size: 16px; font-weight: 800; color: #78350f; margin-top: 4px;">
+                        {{ product.safety_stock }} {{ product.unit }}
+                    </div>
+                </div>
+
+                <div style="background: #f0fdf4; padding: 12px; border-radius: 8px; border: 1px solid #bbf7d0;">
+                    <div style="font-size: 10px; color: #166534; font-weight: 700;">ĐIỀU KIỆN BẢO QUẢN</div>
+                    <div style="font-size: 13px; font-weight: 800; color: #14532d; margin-top: 4px;">
+                        ❄️ {{ product.storage_temp }}
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h4 style="margin: 0 0 8px; font-size: 12px; font-weight: 700; color: #374151;">Mô tả sản phẩm & Hướng dẫn bảo quản:</h4>
+                <div style="font-size: 12px; line-height: 1.7; color: #4b5563; background: #fafafa; padding: 14px; border-radius: 8px; border: 1px solid #edf0ed;">
+                    {{ product.description|default:"Sản phẩm được trồng và thu hoạch theo quy trình an toàn sinh học. Bảo quản nơi khô ráo hoặc ngăn mát tủ lạnh/kho lạnh để giữ nguyên độ tươi và hàm lượng vitamin."|linebreaks }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- BẢNG CÁC LÔ HÀNG ĐANG CÓ TRONG KHO (THEO FEFO) -->
+<div class="panel">
+    <div class="panel-heading">
+        <div>
+            <h2 style="font-size: 14px; font-weight: 800; color: #1f2937; margin: 0 0 4px;">
+                📦 Các Lô Hàng Đang Có Trong Kho (Nguyên tắc FEFO)
+            </h2>
+            <p style="margin: 0; font-size: 11px; color: #6b7280;">Lô có hạn sử dụng gần nhất sẽ được hệ thống ưu tiên tự động xuất trước</p>
+        </div>
+        {% if role != 'CUSTOMER' %}
+        <a href="{% url 'inbound' %}" class="btn btn-success btn-sm">+ Nhập thêm lô mới</a>
+        {% endif %}
+    </div>
+
+    <div style="overflow-x: auto; width: 100%;">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Mã Lô hàng</th>
+                    <th>Vị trí kho</th>
+                    <th>Ngày sản xuất (MFG)</th>
+                    <th>Hạn sử dụng (EXP)</th>
+                    <th>Số lượng tồn</th>
+                    <th>Đánh giá HSD</th>
+                    {% if role != 'CUSTOMER' %}
+                    <th style="text-align: center;">Thao tác</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for b in active_batches %}
+                <tr>
+                    <td><strong>{{ b.batch_code }}</strong></td>
+                    <td>{{ b.location|default:"Kho chung" }}</td>
+                    <td>{{ b.mfg_date|date:"d/m/Y" }}</td>
+                    <td><strong>{{ b.exp_date|date:"d/m/Y" }}</strong></td>
+                    <td><strong>{{ b.qty_current }}</strong> {{ product.unit }}</td>
+                    <td>
+                        {% if b.days_to_expiry <= 7 %}
+                            <span class="badge badge-critical">🔴 Cận hạn (còn {{ b.days_to_expiry }} ngày)</span>
+                        {% elif b.days_to_expiry <= 15 %}
+                            <span class="badge badge-warning">🟡 Cảnh báo (còn {{ b.days_to_expiry }} ngày)</span>
+                        {% else %}
+                            <span class="badge badge-safe">🟢 An toàn (còn {{ b.days_to_expiry }} ngày)</span>
+                        {% endif %}
+                    </td>
+                    {% if role != 'CUSTOMER' %}
+                    <td style="text-align: center; white-space: nowrap;">
+                        <a href="{% url 'outbound' %}?product_id={{ product.id }}" class="btn btn-sm btn-danger">⚡ Xuất FEFO</a>
+                        <a href="{% url 'barcode_label' b.id %}" target="_blank" class="btn btn-sm btn-outline">🏷 In tem</a>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" style="text-align: center; padding: 25px; color: #9ca3af;">
+                        Hiện chưa có lô hàng nào còn tồn trong kho cho sản phẩm này.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

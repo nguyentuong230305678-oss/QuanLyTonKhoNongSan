@@ -1,0 +1,611 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Cửa Hàng Nông Sản An Toàn & Đặt Mua | Nông Sản Xanh</title>
+    <link rel="stylesheet" href="{% static 'core/dashboard.css' %}">
+    <style>
+        :root {
+            --primary: #258451;
+            --primary-dark: #1b6840;
+            --primary-light: #eaf5ed;
+            --accent: #f59e0b;
+        }
+        body { background: #f8faf8; margin: 0; font-family: 'Segoe UI', -apple-system, sans-serif; color: #1f2937; }
+        
+        .navbar-store {
+            background: #ffffff;
+            border-bottom: 1px solid #edf0ed;
+            padding: 14px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .store-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: inherit;
+        }
+        .store-brand-mark {
+            width: 40px; height: 40px;
+            flex: 0 0 40px;
+            object-fit: contain;
+        }
+
+        .hero-banner {
+            background: linear-gradient(135deg, #1b6840 0%, #258451 100%);
+            color: #ffffff;
+            padding: 38px 24px 30px;
+            text-align: center;
+            position: relative;
+        }
+        .hero-banner h1 { font-size: 26px; font-weight: 800; margin: 0 0 8px; letter-spacing: -0.5px; }
+        .hero-banner p { font-size: 13px; max-width: 680px; margin: 0 auto; opacity: 0.92; line-height: 1.6; }
+
+        /* THANH ĐIỀU CHỈNH / HIỂN THỊ THÁNG VÀ MÙA HIỆN TẠI */
+        .season-indicator-bar {
+            background: #f0fdf4;
+            border-bottom: 1px solid #bbf7d0;
+            padding: 8px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            font-size: 12px;
+            flex-wrap: wrap;
+        }
+        .season-indicator-tag {
+            background: #166534;
+            color: #ffffff;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 11px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .month-test-links {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            color: #4b5563;
+        }
+        .month-test-links a {
+            color: #258451;
+            text-decoration: none;
+            padding: 2px 7px;
+            border-radius: 6px;
+            background: #ffffff;
+            border: 1px solid #d1d5db;
+            font-weight: 600;
+        }
+        .month-test-links a:hover, .month-test-links a.active-month {
+            background: #258451;
+            color: #ffffff;
+            border-color: #258451;
+        }
+
+        /* THANH GỢI Ý NÔNG SẢN THEO MÙA */
+        .season-tabs-bar {
+            background: #ffffff;
+            border-bottom: 1px solid #edf0ed;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            overflow-x: auto;
+        }
+        .season-tab {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 16px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            color: #4b5563;
+            background: #f3f4f6;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .season-tab:hover { background: #e5e7eb; color: #111827; }
+        .season-tab.active {
+            background: var(--primary);
+            color: #ffffff;
+            box-shadow: 0 4px 10px rgba(37, 132, 81, 0.25);
+        }
+        .season-tab.highlight {
+            background: #fffbeb;
+            border: 1.5px solid #fde68a;
+            color: #b45309;
+        }
+        .season-tab.highlight.active {
+            background: #d97706;
+            color: #ffffff;
+            border-color: #d97706;
+            box-shadow: 0 4px 10px rgba(217, 119, 6, 0.3);
+        }
+
+        /* THANH BỘ LỌC DANH MỤC SẢN PHẨM */
+        .category-filter-bar {
+            background: #ffffff;
+            border-bottom: 1px solid #edf0ed;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            overflow-x: auto;
+            flex-wrap: nowrap;
+        }
+        .category-filter-label {
+            font-size: 11px;
+            font-weight: 800;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-right: 4px;
+            white-space: nowrap;
+        }
+        .category-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            color: #4b5563;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            transition: all 0.15s;
+            white-space: nowrap;
+        }
+        .category-chip:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: #ffffff;
+        }
+        .category-chip.active {
+            background: #eaf5ed;
+            color: #166534;
+            border-color: #86efac;
+            font-weight: 700;
+        }
+        .chip-count {
+            font-size: 10px;
+            opacity: 0.8;
+            background: rgba(0, 0, 0, 0.05);
+            padding: 1px 6px;
+            border-radius: 10px;
+        }
+
+        .container { max-width: 1240px; margin: 26px auto 50px; padding: 0 20px; }
+
+        /* LƯỚI SẢN PHẨM */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+            gap: 22px;
+            margin-top: 18px;
+        }
+        .product-card {
+            background: #ffffff;
+            border: 1px solid #edf0ed;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(37, 132, 81, 0.12);
+        }
+        .product-image-box {
+            position: relative;
+            width: 100%;
+            height: 180px;
+            background: #f3f4f6;
+            overflow: hidden;
+        }
+        .product-image-box img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+        .product-card:hover .product-image-box img {
+            transform: scale(1.05);
+        }
+        .season-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(4px);
+            color: #1f2937;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .season-badge.current {
+            background: #d97706;
+            color: #ffffff;
+            font-weight: 800;
+            box-shadow: 0 2px 6px rgba(217, 119, 6, 0.4);
+        }
+        .product-body {
+            padding: 16px 18px 18px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+        .product-cat {
+            font-size: 10px;
+            color: #258451;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+        .product-title {
+            font-size: 15px;
+            font-weight: 800;
+            color: #111827;
+            margin: 0 0 8px;
+            line-height: 1.4;
+        }
+        .product-meta {
+            font-size: 11px;
+            color: #6b7280;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+        .product-price-row {
+            margin-top: auto;
+            padding-top: 12px;
+            border-top: 1px dashed #edf0ed;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .price-val {
+            font-size: 17px;
+            font-weight: 800;
+            color: #258451;
+        }
+        .price-val small { font-size: 11px; font-weight: 500; color: #6b7280; }
+        
+        .btn-order {
+            background: #258451;
+            color: #ffffff;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: background 0.15s;
+        }
+        .btn-order:hover { background: #1b6840; color: #ffffff; }
+
+        .btn-link {
+            padding: 7px 12px;
+            border-radius: 7px;
+            font-size: 11px;
+            font-weight: 600;
+            text-decoration: none;
+            border: 1px solid #d1d5db;
+            color: #374151;
+        }
+        .btn-link:hover { background: #f9fafb; }
+    </style>
+</head>
+<body>
+    <!-- TOP NAVIGATION -->
+    <header class="navbar-store">
+        <a href="{% url 'store' %}" class="store-brand">
+            <img class="store-brand-mark" src="{% static 'core/logo.svg' %}" alt="">
+            <div>
+                <strong style="font-size: 15px; color: #1b6840;">Nông Sản Xanh</strong>
+                <div style="font-size: 9px; color: #6b7280; font-weight: 700; letter-spacing: 0.5px;">CỬA HÀNG ĐẶT NÔNG SẢN CHÍNH VỤ</div>
+            </div>
+        </a>
+
+        <!-- THANH TÌM KIẾM ĐƯỢC THIẾT KẾ HIỆN ĐẠI -->
+        <form method="GET" style="position: relative; display: flex; align-items: center; flex: 0 1 420px;">
+            {% if season_filter and season_filter != 'ALL' %}
+                <input type="hidden" name="season" value="{{ season_filter }}">
+            {% endif %}
+            {% if cat_filter %}
+                <input type="hidden" name="category" value="{{ cat_filter }}">
+            {% endif %}
+            {% if is_test_month %}
+                <input type="hidden" name="month" value="{{ current_month }}">
+            {% endif %}
+            <div style="position: relative; width: 100%; display: flex; align-items: center;">
+                <span style="position: absolute; left: 14px; color: #9ca3af; font-size: 13px;">🔍</span>
+                <input type="text" name="q" value="{{ q }}" placeholder="Tìm kiếm tên nông sản, mã, vụ mùa..." style="width: 100%; padding: 9px 85px 9px 38px; border-radius: 25px; border: 1.5px solid #d1d5db; font-size: 12px; outline: none; transition: all 0.2s; box-sizing: border-box;" onfocus="this.style.borderColor='#258451'; this.style.boxShadow='0 0 0 3px rgba(37,132,81,0.12)';" onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none';">
+                {% if q %}
+                    <a href="{% url 'store' %}{% if season_filter and season_filter != 'ALL' %}?season={{ season_filter }}{% endif %}" style="position: absolute; right: 82px; color: #9ca3af; text-decoration: none; font-size: 14px; font-weight: bold;" title="Xóa tìm kiếm">✕</a>
+                {% endif %}
+                <button type="submit" style="position: absolute; right: 3px; background: #258451; color: #fff; border: none; padding: 7px 16px; border-radius: 20px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 6px rgba(37, 132, 81, 0.25);">
+                    Tìm kiếm
+                </button>
+            </div>
+        </form>
+
+        <!-- KHỐI TÀI KHOẢN -->
+        <div style="display: flex; align-items: center; gap: 10px;">
+            {% if user.is_authenticated %}
+                <a href="{% url 'profile' %}" style="display: flex; align-items: center; gap: 7px; text-decoration: none; color: #374151; font-size: 12px;">
+                    <span style="width: 30px; height: 30px; border-radius: 50%; background: #eaf5ed; color: #258451; display: grid; place-items: center; font-weight: 700; font-size: 11px;">
+                        {{ user.username|slice:":2"|upper }}
+                    </span>
+                    <span>Chào, <strong>{{ user.username }}</strong></span>
+                </a>
+                <a href="{% url 'profile' %}" class="btn-link">👤 Hồ sơ</a>
+                <a href="{% url 'orders' %}" class="btn-link">📋 Đơn hàng</a>
+                {% if role != 'CUSTOMER' %}
+                    <a href="{% url 'dashboard' %}" class="btn-link" style="background: #eef7f0; color: #166534; border-color: #bbf7d0;">
+                        ⚙ Quản Lý Kho
+                    </a>
+                {% endif %}
+                <a href="{% url 'logout' %}" class="btn-link" style="color: #dc2626;">Thoát</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="btn-link">Đăng nhập</a>
+                <a href="{% url 'register' %}" class="btn-order">Đăng ký mua hàng</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <!-- BANNER HERO -->
+    <div class="hero-banner">
+        <h1>🌾 NÔNG SẢN TƯƠI SẠCH & GỢI Ý THEO MÙA VỤ</h1>
+        <p>Hệ thống tự động nhận diện tháng và mùa vụ thực tế để gợi ý nông sản thu hoạch đúng vụ, tối ưu chất lượng dinh dưỡng và giá xuất kho cạnh tranh nhất.</p>
+    </div>
+
+    <!-- THANH THÔNG TIN THÁNG HIỆN TẠI VÀ CHUYỂN ĐỔI KIỂM THỬ THÁNG (TEST-DRIVEN DEMO) -->
+    <div class="season-indicator-bar">
+        <span>📅 Tháng hiện tại trên hệ thống: <strong>Tháng {{ current_month }}</strong></span>
+        <span class="season-indicator-tag">
+            ★ Chính vụ tự động: {{ current_season_name }}
+        </span>
+        <div class="month-test-links">
+            <span>(Kiểm thử mùa:</span>
+            <a href="{% url 'store' %}?month=2" class="{% if current_month == 2 %}active-month{% endif %}" title="Tháng 2 là Mùa Xuân (Đón Tết)">Tháng 2 (Xuân)</a>
+            <a href="{% url 'store' %}?month=5" class="{% if current_month == 5 %}active-month{% endif %}" title="Tháng 5 là Mùa Hạ (Giải nhiệt)">Tháng 5 (Hạ)</a>
+            <a href="{% url 'store' %}?month=8" class="{% if current_month == 8 %}active-month{% endif %}" title="Tháng 8 là Mùa Thu (Trái cây rộ)">Tháng 8 (Thu)</a>
+            <a href="{% url 'store' %}?month=11" class="{% if current_month == 11 %}active-month{% endif %}" title="Tháng 11 là Mùa Đông (Vụ Đông)">Tháng 11 (Đông)</a>
+            {% if is_test_month %}
+                <a href="{% url 'store' %}" style="background: #fee2e2; color: #dc2626; border-color: #fca5a5;">Khôi phục tháng thực tế</a>
+            {% endif %}
+            <span>)</span>
+        </div>
+    </div>
+
+    <!-- THANH ĐIỀU HƯỚNG GỢI Ý NÔNG SẢN THEO CÁC MÙA (HOÀN TOÀN ĐỘNG THEO THÁNG) -->
+    <nav class="season-tabs-bar">
+        <a href="{% url 'store' %}?season=ALL{% if cat_filter %}&category={{ cat_filter }}{% endif %}{% if q %}&q={{ q }}{% endif %}{% if is_test_month %}&month={{ current_month }}{% endif %}" 
+           class="season-tab {% if season_filter == 'ALL' %}active{% endif %}">
+            <span>🌿</span> Tất cả vụ mùa
+        </a>
+
+        <!-- MÙA XUÂN (THÁNG 1, 2, 3) -->
+        <a href="{% url 'store' %}?season=SPRING{% if cat_filter %}&category={{ cat_filter }}{% endif %}{% if q %}&q={{ q }}{% endif %}{% if is_test_month %}&month={{ current_month }}{% endif %}" 
+           class="season-tab {% if current_season == 'SPRING' %}highlight{% endif %} {% if season_filter == 'SPRING' %}active{% endif %}">
+            <span>🌸</span> Mùa Xuân (Đón Tết){% if current_season == 'SPRING' %} (Chính vụ hiện tại) ★{% endif %}
+        </a>
+
+        <!-- MÙA HẠ (THÁNG 4, 5, 6) -->
+        <a href="{% url 'store' %}?season=SUMMER{% if cat_filter %}&category={{ cat_filter }}{% endif %}{% if q %}&q={{ q }}{% endif %}{% if is_test_month %}&month={{ current_month }}{% endif %}" 
+           class="season-tab {% if current_season == 'SUMMER' %}highlight{% endif %} {% if season_filter == 'SUMMER' %}active{% endif %}">
+            <span>☀️</span> Mùa Hạ (Giải nhiệt){% if current_season == 'SUMMER' %} (Chính vụ hiện tại) ★{% endif %}
+        </a>
+
+        <!-- MÙA THU (THÁNG 7, 8, 9) -->
+        <a href="{% url 'store' %}?season=AUTUMN{% if cat_filter %}&category={{ cat_filter }}{% endif %}{% if q %}&q={{ q }}{% endif %}{% if is_test_month %}&month={{ current_month }}{% endif %}" 
+           class="season-tab {% if current_season == 'AUTUMN' %}highlight{% endif %} {% if season_filter == 'AUTUMN' %}active{% endif %}">
+            <span>🍂</span> Mùa Thu (Trái cây rộ){% if current_season == 'AUTUMN' %} (Chính vụ hiện tại) ★{% endif %}
+        </a>
+
+        <!-- MÙA ĐÔNG (THÁNG 10, 11, 12) -->
+        <a href="{% url 'store' %}?season=WINTER{% if cat_filter %}&category={{ cat_filter }}{% endif %}{% if q %}&q={{ q }}{% endif %}{% if is_test_month %}&month={{ current_month }}{% endif %}" 
+           class="season-tab {% if current_season == 'WINTER' %}highlight{% endif %} {% if season_filter == 'WINTER' %}active{% endif %}">
+            <span>❄️</span> Mùa Đông (Đông xuân){% if current_season == 'WINTER' %} (Chính vụ hiện tại) ★{% endif %}
+        </a>
+    </nav>
+
+    <!-- THANH BỘ LỌC DANH MỤC NÔNG SẢN (CATEGORY FILTER) -->
+    <div class="category-filter-bar">
+        <span class="category-filter-label">📁 Danh mục:</span>
+        <a href="{% url 'store' %}?category={% if season_filter and season_filter != 'ALL' %}&season={{ season_filter }}{% endif %}{% if q %}&q={{ q }}{% endif %}{% if is_test_month %}&month={{ current_month }}{% endif %}" 
+           class="category-chip {% if not cat_filter %}active{% endif %}">
+            Tất cả <span class="chip-count">{{ total_products_count }}</span>
+        </a>
+        {% for c in categories %}
+        <a href="{% url 'store' %}?category={{ c.id }}{% if season_filter and season_filter != 'ALL' %}&season={{ season_filter }}{% endif %}{% if q %}&q={{ q }}{% endif %}{% if is_test_month %}&month={{ current_month }}{% endif %}" 
+           class="category-chip {% if cat_filter == c.id|stringformat:'s' %}active{% endif %}">
+            {{ c.name }} <span class="chip-count">{{ c.product_count }}</span>
+        </a>
+        {% endfor %}
+    </div>
+
+    <!-- CONTAINER SẢN PHẨM -->
+    <main class="container">
+        <!-- TIÊU ĐỀ KHU VỰC ĐANG CHỌN -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
+            <div>
+                <h2 style="font-size: 18px; font-weight: 800; margin: 0; color: #1f2937;">
+                    {% if season_filter == 'SPRING' %}
+                        🌸 Nông sản Mùa Xuân & Đón Tết (Tháng 1 - 3)
+                    {% elif season_filter == 'SUMMER' %}
+                        ☀️ Trái cây đặc sản Mùa Hạ (Tháng 4 - 6)
+                    {% elif season_filter == 'AUTUMN' %}
+                        🍂 Nông sản ngọt lành Mùa Thu (Tháng 7 - 9)
+                    {% elif season_filter == 'WINTER' %}
+                        ❄️ Nông sản chính vụ Mùa Đông (Tháng 10 - 12)
+                    {% else %}
+                        🌿 Tất cả nông sản đạt tiêu chuẩn tại kho
+                    {% endif %}
+                    {% if q %}
+                        <span style="font-size: 13px; font-weight: normal; color: #6b7280;">(Tìm kiếm: "{{ q }}")</span>
+                    {% endif %}
+                </h2>
+                <p style="margin: 3px 0 0; font-size: 11px; color: #6b7280;">
+                    Chính vụ hiện tại tháng {{ current_month }}: <strong style="color: #258451;">{{ current_season_name }}</strong> • Kiểm soát chất lượng theo Lô và sẵn sàng xuất kho
+                </p>
+            </div>
+            <span style="font-size: 12px; font-weight: 700; color: #258451; background: #eaf5ed; padding: 4px 12px; border-radius: 20px;">
+                Hiển thị: {{ products.count }} sản phẩm
+            </span>
+        </div>
+
+        <!-- LƯỚI HIỂN THỊ NÔNG SẢN -->
+        <div class="product-grid">
+            {% for p in products %}
+            <article class="product-card">
+                <a href="{% url 'product_detail' p.id %}" class="product-image-box" style="text-decoration: none; display: block;">
+                    {% if p.image_url %}
+                        <img src="{{ p.image_url }}" alt="{{ p.name }}" loading="lazy">
+                    {% else %}
+                        <div style="display: grid; place-items: center; height: 100%; color: #9ca3af; font-size: 11px;">
+                            (Đang cập nhật ảnh)
+                        </div>
+                    {% endif %}
+
+                    <!-- HUY HIỆU MÙA VỤ: TỰ ĐỘNG ĐÁNH DẤU CHÍNH VỤ KHI TRÙNG MÙA HIỆN TẠI -->
+                    {% if p.season == current_season %}
+                        <span class="season-badge current">★ {{ p.get_season_display }} (Chính vụ)</span>
+                    {% elif p.season == 'SPRING' %}
+                        <span class="season-badge">🌸 Vụ Mùa Xuân</span>
+                    {% elif p.season == 'SUMMER' %}
+                        <span class="season-badge">☀️ Vụ Mùa Hạ</span>
+                    {% elif p.season == 'AUTUMN' %}
+                        <span class="season-badge">🍂 Vụ Mùa Thu</span>
+                    {% elif p.season == 'WINTER' %}
+                        <span class="season-badge">❄️ Vụ Mùa Đông</span>
+                    {% else %}
+                        <span class="season-badge">🌿 Quanh năm</span>
+                    {% endif %}
+                </a>
+
+                <div class="product-body">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span class="product-cat">{{ p.category.name }}</span>
+                        <span class="badge" style="background: #eaf5ed; color: #166534; font-size: 9px;">✓ {{ p.quality_standard|default:"VietGAP" }}</span>
+                    </div>
+
+                    <h3 class="product-title" style="margin-top: 4px;">
+                        <a href="{% url 'product_detail' p.id %}" style="text-decoration: none; color: inherit;">
+                            {{ p.name }}
+                        </a>
+                    </h3>
+
+                    <div class="product-meta">
+                        <div>Vùng trồng: <strong>{{ p.origin|default:"Đà Lạt / Tiền Giang" }}</strong></div>
+                        <div>Cơ sở nhập: <strong>{{ p.supplier.name|default:"HTX Nông Sản Xanh" }}</strong></div>
+                        <div>
+                            Tồn kho khả dụng: 
+                            {% if p.total_stock > 0 %}
+                                <strong style="color: #15803d;">{{ p.total_stock }} {{ p.unit }}</strong>
+                            {% else %}
+                                <span style="color: #dc2626; font-weight: 700;">Hết hàng tạm thời</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="product-price-row">
+                        <div class="price-val">
+                            {{ p.price|floatformat:0 }} đ <small>/ {{ p.unit }}</small>
+                        </div>
+
+                        <div style="display: flex; gap: 6px;">
+                            <a href="{% url 'product_detail' p.id %}" class="btn-link" style="padding: 6px 10px; font-size: 11px;" title="Xem thông tin chi tiết">
+                                👁 Chi tiết
+                            </a>
+
+                            {% if p.total_stock > 0 %}
+                                {% if user.is_authenticated %}
+                                    <a href="{% url 'checkout' %}?product_id={{ p.id }}&qty=10" class="btn-order">
+                                        <span>⚡</span> Đặt mua
+                                    </a>
+                                {% else %}
+                                    <button type="button" onclick="promptLogin('{{ p.name }}', '{% url 'checkout' %}?product_id={{ p.id }}&qty=10')" class="btn-order">
+                                        <span>⚡</span> Đặt mua
+                                    </button>
+                                {% endif %}
+                            {% else %}
+                                <button class="btn-order" disabled style="opacity: 0.5; background: #9ca3af; cursor: not-allowed;">
+                                    Tạm hết
+                                </button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </article>
+            {% empty %}
+            <div style="grid-column: 1 / -1; background: #fff; padding: 40px; border-radius: 12px; text-align: center; border: 1px solid #edf0ed;">
+                <p style="margin: 0; color: #6b7280; font-size: 13px;">Không tìm thấy nông sản nào phù hợp với bộ lọc hiện tại.</p>
+                <a href="{% url 'store' %}" class="btn-order" style="margin-top: 15px; display: inline-flex;">Xem tất cả nông sản</a>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+
+    <!-- MODAL YÊU CẦU ĐĂNG NHẬP TRƯỚC KHI ĐẶT HÀNG -->
+    <div id="loginModal" style="display: none; position: fixed; inset: 0; z-index: 999; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); align-items: center; justify-content: center;">
+        <div style="background: #ffffff; border-radius: 16px; width: 90%; max-width: 440px; padding: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.25); text-align: center;">
+            <div style="width: 60px; height: 60px; border-radius: 50%; background: #fef3c7; color: #d97706; display: grid; place-items: center; font-size: 28px; margin: 0 auto 16px;">
+                🔐
+            </div>
+            <h3 style="font-size: 18px; font-weight: 800; color: #1f2937; margin: 0 0 8px;">Yêu Cầu Đăng Nhập Tài Khoản</h3>
+            <p style="font-size: 12px; color: #6b7280; line-height: 1.6; margin: 0 0 22px;">
+                Để đặt mua <strong id="modalProdName" style="color: #258451;"></strong> và theo dõi đơn giao hàng theo chuẩn bảo quản kho FEFO, quý khách vui lòng đăng nhập vào tài khoản.
+            </p>
+            <div style="display: grid; gap: 10px;">
+                <a id="modalLoginBtn" href="#" class="btn-order" style="justify-content: center; padding: 12px; font-size: 13px;">
+                    Đăng nhập tài khoản ngay →
+                </a>
+                <a href="{% url 'register' %}" style="display: inline-flex; justify-content: center; padding: 11px; border: 1px solid #d1d5db; border-radius: 8px; color: #374151; font-size: 12px; font-weight: 600; text-decoration: none;">
+                    Chưa có tài khoản? Đăng ký tại đây
+                </a>
+                <button type="button" onclick="closeLoginModal()" style="background: none; border: none; color: #9ca3af; font-size: 11px; cursor: pointer; padding: 8px; margin-top: 4px;">
+                    ✕ Để sau / Tiếp tục xem nông sản
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function promptLogin(productName, checkoutUrl) {
+            document.getElementById('modalProdName').innerText = productName;
+            document.getElementById('modalLoginBtn').href = '{% url "login" %}?next=' + encodeURIComponent(checkoutUrl);
+            const modal = document.getElementById('loginModal');
+            modal.style.display = 'flex';
+        }
+        function closeLoginModal() {
+            document.getElementById('loginModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

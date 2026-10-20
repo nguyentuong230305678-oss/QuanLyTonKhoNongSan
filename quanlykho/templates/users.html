@@ -1,0 +1,470 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}Quản trị Tài khoản & Phân quyền Role | Nông Sản Xanh{% endblock %}
+{% block nav_users %}active{% endblock %}
+{% block breadcrumb %}Quản trị Người dùng & Phân quyền Role{% endblock %}
+
+{% block content %}
+<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px;">
+    <div>
+        <p class="eyebrow">HỆ THỐNG PHÂN QUYỀN TRUY CẬP (RBAC - ROLE BASED ACCESS CONTROL)</p>
+        <h1 style="font-size: 22px; font-weight: 800; margin: 0 0 4px;">Quản Trị Tài Khoản & <span>Phân Quyền Role</span></h1>
+        <p style="margin: 0; color: #6b7280; font-size: 11px;">Thiết lập tài khoản người dùng, phân cấp vai trò và quản lý ma trận quyền hạn truy cập các chức năng kho</p>
+    </div>
+    <button type="button" class="btn btn-success" onclick="openCreateUserModal()" style="padding: 10px 18px; font-size: 12px; font-weight: 700;">
+        <span>＋</span> Thêm tài khoản mới
+    </button>
+</div>
+
+<!-- THẺ THỐNG KÊ TỔNG QUAN TÀI KHOẢN THEO ROLE -->
+<div class="stats-grid" style="grid-template-columns: repeat(5, 1fr); margin-bottom: 22px;">
+    <div class="stat-card">
+        <div class="stat-top">
+            <span>Tổng số tài khoản</span>
+            <span class="stat-icon green">👥</span>
+        </div>
+        <div class="stat-value" style="font-size: 22px;">{{ total_count }}</div>
+        <div class="stat-foot">
+            <span class="trend positive">{{ active_count }} hoạt động</span>
+        </div>
+    </div>
+
+    <div class="stat-card" style="border-left: 4px solid #dc2626;">
+        <div class="stat-top">
+            <span>Quản trị viên (ADMIN)</span>
+            <span class="stat-icon red">🛡</span>
+        </div>
+        <div class="stat-value" style="font-size: 22px; color: #dc2626;">{{ admin_count }}</div>
+        <div class="stat-foot"><span>Toàn quyền hệ thống</span></div>
+    </div>
+
+    <div class="stat-card" style="border-left: 4px solid #0284c7;">
+        <div class="stat-top">
+            <span>Thủ kho (MANAGER)</span>
+            <span class="stat-icon blue">📦</span>
+        </div>
+        <div class="stat-value" style="font-size: 22px; color: #0284c7;">{{ manager_count }}</div>
+        <div class="stat-foot"><span>Quản lý nhập/xuất FEFO</span></div>
+    </div>
+
+    <div class="stat-card" style="border-left: 4px solid #d97706;">
+        <div class="stat-top">
+            <span>Nhân viên kho (STAFF)</span>
+            <span class="stat-icon orange">👷</span>
+        </div>
+        <div class="stat-value" style="font-size: 22px; color: #d97706;">{{ staff_count }}</div>
+        <div class="stat-foot"><span>Thao tác vận hành kho</span></div>
+    </div>
+
+    <div class="stat-card" style="border-left: 4px solid #16a34a;">
+        <div class="stat-top">
+            <span>Khách hàng / Đại lý</span>
+            <span class="stat-icon green">🛒</span>
+        </div>
+        <div class="stat-value" style="font-size: 22px; color: #16a34a;">{{ customer_count }}</div>
+        <div class="stat-foot"><span>Đặt hàng mua sỉ</span></div>
+    </div>
+</div>
+
+<!-- THANH BỘ LỌC ROLE VÀ TÌM KIẾM TÀI KHOẢN -->
+<div class="card" style="padding: 16px 20px; margin-bottom: 22px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+        <!-- TABS LỌC ROLE -->
+        <div style="display: flex; gap: 8px; overflow-x: auto;">
+            <a href="{% url 'users' %}" class="btn {% if not role_filter %}btn-primary{% else %}btn-outline{% endif %} btn-sm" style="border-radius: 20px; padding: 6px 14px;">
+                Tất cả ({{ total_count }})
+            </a>
+            <a href="{% url 'users' %}?role=ADMIN" class="btn {% if role_filter == 'ADMIN' %}btn-primary{% else %}btn-outline{% endif %} btn-sm" style="border-radius: 20px; padding: 6px 14px;">
+                🛡 Quản trị viên ({{ admin_count }})
+            </a>
+            <a href="{% url 'users' %}?role=WAREHOUSE_MANAGER" class="btn {% if role_filter == 'WAREHOUSE_MANAGER' %}btn-primary{% else %}btn-outline{% endif %} btn-sm" style="border-radius: 20px; padding: 6px 14px;">
+                📦 Thủ kho ({{ manager_count }})
+            </a>
+            <a href="{% url 'users' %}?role=STAFF" class="btn {% if role_filter == 'STAFF' %}btn-primary{% else %}btn-outline{% endif %} btn-sm" style="border-radius: 20px; padding: 6px 14px;">
+                👷 Nhân viên ({{ staff_count }})
+            </a>
+            <a href="{% url 'users' %}?role=CUSTOMER" class="btn {% if role_filter == 'CUSTOMER' %}btn-primary{% else %}btn-outline{% endif %} btn-sm" style="border-radius: 20px; padding: 6px 14px;">
+                🛒 Khách hàng ({{ customer_count }})
+            </a>
+        </div>
+
+        <!-- TÌM KIẾM -->
+        <form method="GET" style="display: flex; gap: 8px; align-items: center;">
+            {% if role_filter %}
+                <input type="hidden" name="role" value="{{ role_filter }}">
+            {% endif %}
+            <input type="text" name="q" value="{{ q }}" placeholder="Tìm theo username hoặc họ tên..." class="form-control" style="width: 240px; border-radius: 20px; padding: 6px 14px; font-size: 11px;">
+            <button type="submit" class="btn btn-outline btn-sm" style="border-radius: 20px; padding: 6px 14px;">Tìm</button>
+            {% if q %}
+                <a href="{% url 'users' %}{% if role_filter %}?role={{ role_filter }}{% endif %}" class="btn btn-outline btn-sm" style="color: #dc2626; border-radius: 20px;">✕ Bỏ tìm</a>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+<!-- BẢNG DANH SÁCH NGƯỜI DÙNG & THAO TÁC PHÂN QUYỀN -->
+<div class="card" style="padding: 0; overflow: hidden; margin-bottom: 30px;">
+    <div style="padding: 16px 20px; border-bottom: 1px solid #edf0ed; display: flex; justify-content: space-between; align-items: center;">
+        <h3 style="margin: 0; font-size: 14px; font-weight: 800; color: #1f2937;">
+            Danh Sách Tài Khoản Trong Hệ Thống ({{ users.count }} người dùng)
+        </h3>
+        <span style="font-size: 11px; color: #6b7280;">Bấm vào thao tác để cập nhật vai trò, khóa tài khoản hoặc reset mật khẩu</span>
+    </div>
+
+    <div style="overflow-x: auto; width: 100%;">
+        <table class="data-table" style="margin-top: 0;">
+            <thead>
+                <tr>
+                    <th style="min-width: 180px;">Tài khoản / Người dùng</th>
+                    <th style="min-width: 140px;">Thông tin liên hệ</th>
+                    <th style="min-width: 160px;">Vai trò hiện tại (Role)</th>
+                    <th style="min-width: 100px;">Trạng thái</th>
+                    <th style="min-width: 130px;">Đăng nhập cuối</th>
+                    <th style="min-width: 220px; text-align: center;">Thao tác phân quyền & bảo mật</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in users %}
+                <tr>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div style="width: 38px; height: 38px; border-radius: 50%; background: #eaf5ed; color: #258451; display: grid; place-items: center; font-weight: 800; font-size: 11px; flex-shrink: 0; border: 1.5px solid #86efac;">
+                                {{ u.username|slice:":2"|upper }}
+                            </div>
+                            <div>
+                                <strong style="font-size: 12px; color: #111827;">{{ u.username }}</strong>
+                                <div style="font-size: 11px; color: #374151;">{{ u.profile.full_name|default:u.username }}</div>
+                                <div style="font-size: 9px; color: #9ca3af;">ID: #{{ u.id }} | Đăng ký: {{ u.date_joined|date:"d/m/Y" }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div style="font-size: 11px;">📞 {{ u.profile.phone|default:"Chưa có SĐT" }}</div>
+                        <div style="font-size: 10px; color: #6b7280; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                            📍 {{ u.profile.address|default:"Chưa cập nhật địa chỉ" }}
+                        </div>
+                    </td>
+                    <td>
+                        {% if u.profile.role == 'ADMIN' %}
+                            <span class="badge badge-admin" style="padding: 5px 10px; font-size: 11px;">🛡 Quản trị viên (ADMIN)</span>
+                        {% elif u.profile.role == 'WAREHOUSE_MANAGER' %}
+                            <span class="badge badge-manager" style="padding: 5px 10px; font-size: 11px;">📦 Thủ kho (MANAGER)</span>
+                        {% elif u.profile.role == 'STAFF' %}
+                            <span class="badge badge-staff" style="padding: 5px 10px; font-size: 11px;">👷 Nhân viên kho (STAFF)</span>
+                        {% elif u.profile.role == 'CUSTOMER' %}
+                            <span class="badge" style="background: #e0f2fe; color: #0369a1; padding: 5px 10px; font-size: 11px;">🛒 Khách hàng / Đại lý</span>
+                        {% else %}
+                            <span class="badge badge-public" style="padding: 5px 10px; font-size: 11px;">Khách</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if u.is_active %}
+                            <span style="color: #15803d; font-size: 11px; font-weight: 700;">● Hoạt động</span>
+                        {% else %}
+                            <span style="color: #dc2626; font-size: 11px; font-weight: 700;">● Bị khóa</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <small style="color: #4b5563;">{{ u.last_login|date:"d/m/Y H:i"|default:"Chưa đăng nhập" }}</small>
+                    </td>
+                    <td style="text-align: center; white-space: nowrap;">
+                        <!-- Đổi vai trò -->
+                        <button type="button" class="btn btn-outline btn-sm" onclick="openRoleModal('{{ u.id }}', '{{ u.username }}', '{{ u.profile.role }}')" title="Thay đổi vai trò người dùng">
+                            🔄 Đổi Role
+                        </button>
+
+                        <!-- Đổi mật khẩu -->
+                        <button type="button" class="btn btn-outline btn-sm" onclick="openResetPasswordModal('{{ u.id }}', '{{ u.username }}')" title="Đặt lại mật khẩu">
+                            🔑 Đổi MK
+                        </button>
+
+                        <!-- Khóa / Mở khóa -->
+                        {% if u == request.user %}
+                            <span class="btn btn-outline btn-sm" style="opacity: 0.4; cursor: not-allowed;" title="Không thể tự khóa tài khoản của mình">
+                                🔒 Đang dùng
+                            </span>
+                        {% else %}
+                            <form method="POST" style="display: inline-block;" onsubmit="return confirm('Bạn có chắc muốn {% if u.is_active %}KHÓA{% else %}MỞ KHÓA{% endif %} tài khoản {{ u.username }}?');">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="toggle_status">
+                                <input type="hidden" name="user_id" value="{{ u.id }}">
+                                {% if u.is_active %}
+                                    <button type="submit" class="btn btn-outline btn-sm" style="color: #dc2626; border-color: #fca5a5;">
+                                        🔒 Khóa
+                                    </button>
+                                {% else %}
+                                    <button type="submit" class="btn btn-success btn-sm">
+                                        🔓 Mở khóa
+                                    </button>
+                                {% endif %}
+                            </form>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 30px; color: #9ca3af;">
+                        Không có người dùng nào phù hợp với bộ lọc hiện tại.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- BẢNG MA TRẬN PHÂN QUYỀN CHI TIẾT THEO CÁC ROLE (RBAC MATRIX) -->
+<div class="card" style="padding: 24px; margin-bottom: 30px; border-top: 3px solid #258451;">
+    <div style="margin-bottom: 16px;">
+        <h2 style="font-size: 16px; font-weight: 800; color: #1f2937; margin: 0 0 6px;">
+            📋 Bảng Ma Trận Phân Quyền Chi Tiết (Role-Based Permissions Matrix)
+        </h2>
+        <p style="margin: 0; font-size: 11px; color: #6b7280;">
+            Quy định quyền hạn đọc, ghi, phê duyệt, xuất kho và quản trị tương ứng cho 4 nhóm vai trò chuẩn trong hệ thống
+        </p>
+    </div>
+
+    <div style="overflow-x: auto; width: 100%;">
+        <table class="data-table" style="margin-top: 0; text-align: center;">
+            <thead>
+                <tr>
+                    <th style="text-align: left; min-width: 220px;">Phân hệ chức năng kho</th>
+                    <th style="min-width: 140px; background: #fef2f2; color: #991b1b;">🛡 Quản trị viên<br><small>(ROLE_ADMIN)</small></th>
+                    <th style="min-width: 140px; background: #f0f9ff; color: #075985;">📦 Thủ kho<br><small>(ROLE_MANAGER)</small></th>
+                    <th style="min-width: 140px; background: #fffbeb; color: #92400e;">👷 Nhân viên kho<br><small>(ROLE_STAFF)</small></th>
+                    <th style="min-width: 140px; background: #f0fdf4; color: #166534;">🛒 Khách hàng<br><small>(ROLE_CUSTOMER)</small></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="text-align: left;">
+                        <strong>1. Tổng quan & Dashboard</strong>
+                        <div style="font-size: 9px; color: #6b7280;">Xem chỉ số tồn kho, doanh thu, cảnh báo hạn dùng</div>
+                    </td>
+                    <td><span style="color: #15803d; font-weight: 800; font-size: 14px;">✓ Toàn quyền</span></td>
+                    <td><span style="color: #15803d; font-weight: 800; font-size: 14px;">✓ Xem đầy đủ</span></td>
+                    <td><span style="color: #15803d; font-weight: 800; font-size: 14px;">✓ Xem tồn kho</span></td>
+                    <td><span style="color: #9ca3af;">✕ Không có quyền</span></td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;">
+                        <strong>2. Quản lý Nông sản & Cơ sở nhập</strong>
+                        <div style="font-size: 9px; color: #6b7280;">Thêm mới, sửa thông tin, vùng trồng, VietGAP</div>
+                    </td>
+                    <td><span style="color: #15803d; font-weight: 800; font-size: 14px;">✓ Thêm / Sửa / Xóa</span></td>
+                    <td><span style="color: #15803d; font-weight: 800; font-size: 14px;">✓ Thêm / Sửa</span></td>
+                    <td><span style="color: #0284c7;">👁 Chỉ xem</span></td>
+                    <td><span style="color: #0284c7;">👁 Xem tại Cửa hàng</span></td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;">
+                        <strong>3. Nhập kho & Tạo lô Barcode</strong>
+                        <div style="font-size: 9px; color: #6b7280;">Lập phiếu nhập, tạo mã lô hàng, in tem QR/Barcode</div>
+                    </td>
+                    <td><span style="color: #15803d; font-weight: 800; font-size: 14px;">✓ Toàn quyền</span></td>
+                    <td><span style="color: #15803d; font-weight: 800; font-size: 14px;">✓ Tạo phiếu & In tem</span></td>
+                    <td><span style="color: #15803d; font-weight: 800; font-size: 14px;">✓ In tem & Xếp kệ</span></td>
+                    <td><span style="color: #9ca3af;">✕ Không có quyền</span></td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;">
+                        <strong>4. Xuất kho theo nguyên tắc FEFO</strong>
+                        <div style="font-size: 9px; color: #6b7280;">Đề xuất tự động lô cận hạn xuất trước, in phiếu xuất</div>
+                    </td>
+                    <td><span style="color: #15803d; font-weight: 800; font-size: 14px;">✓ Toàn quyền</span></td>
+                    <td><span style="color: #15803d; font-weight: 800; font-size: 14px;">✓ Duyệt & Xuất FEFO</span></td>
+                    <td><span style="color: #15803d; font-weight: 800; font-size: 14px;">✓ Xuất kho theo lệnh</span></td>
+                    <td><span style="color: #9ca3af;">✕ Không có quyền</span></td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;">
+                        <strong>5. Kiểm kê & Biên bản hao hụt</strong>
+                        <div style="font-size: 9px; color: #6b7280;">Đối soát tồn thực tế, ghi nhận dập nát, hủy lô quá hạn</div>
+                    </td>
+                    <td><span style="color: #15803d; font-weight: 800; font-size: 14px;">✓ Toàn quyền duyệt</span></td>
+                    <td><span style="color: #15803d; font-weight: 800; font-size: 14px;">✓ Lập biên bản hủy</span></td>
+                    <td><span style="color: #15803d; font-weight: 800; font-size: 14px;">✓ Nhập số kiểm đếm</span></td>
+                    <td><span style="color: #9ca3af;">✕ Không có quyền</span></td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;">
+                        <strong>6. Cửa hàng Bán lẻ & Đặt mua Online</strong>
+                        <div style="font-size: 9px; color: #6b7280;">Xem nông sản theo mùa, đặt mua, quét VietQR</div>
+                    </td>
+                    <td><span style="color: #15803d; font-weight: 800; font-size: 14px;">✓ Quản trị</span></td>
+                    <td><span style="color: #15803d; font-weight: 800; font-size: 14px;">✓ Tiếp nhận đơn</span></td>
+                    <td><span style="color: #15803d; font-weight: 800; font-size: 14px;">✓ Soạn đơn hàng</span></td>
+                    <td><span style="color: #15803d; font-weight: 800; font-size: 14px;">✓ Đặt mua & Quét QR</span></td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;">
+                        <strong>7. Báo cáo & Thống kê tài chính</strong>
+                        <div style="font-size: 9px; color: #6b7280;">Thống kê giá trị vốn, tỷ lệ cận hạn, báo cáo nhập xuất</div>
+                    </td>
+                    <td><span style="color: #15803d; font-weight: 800; font-size: 14px;">✓ Toàn quyền</span></td>
+                    <td><span style="color: #15803d; font-weight: 800; font-size: 14px;">✓ Báo cáo tồn & HSD</span></td>
+                    <td><span style="color: #9ca3af;">✕ Không có quyền</span></td>
+                    <td><span style="color: #9ca3af;">✕ Không có quyền</span></td>
+                </tr>
+                <tr style="background: #fafafa;">
+                    <td style="text-align: left;">
+                        <strong>8. Quản trị Tài khoản & Phân quyền Role</strong>
+                        <div style="font-size: 9px; color: #6b7280;">Đổi Role, khóa tài khoản, cấp lại mật khẩu</div>
+                    </td>
+                    <td><span style="color: #15803d; font-weight: 800; font-size: 14px;">🛡 ĐỘC QUYỀN ADMIN</span></td>
+                    <td><span style="color: #9ca3af;">✕ Không có quyền</span></td>
+                    <td><span style="color: #9ca3af;">✕ Không có quyền</span></td>
+                    <td><span style="color: #9ca3af;">✕ Không có quyền</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- MODAL 1: TẠO TÀI KHOẢN MỚI -->
+<div id="createUserModal" style="display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); align-items: center; justify-content: center;">
+    <div style="background: #ffffff; border-radius: 14px; width: 90%; max-width: 520px; padding: 26px; box-shadow: 0 20px 40px rgba(0,0,0,0.25);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; border-bottom: 1px solid #edf0ed; padding-bottom: 10px;">
+            <h3 style="margin: 0; font-size: 16px; font-weight: 800; color: #1b6840;">➕ Thêm Tài Khoản Mới Vào Hệ Thống</h3>
+            <button type="button" onclick="closeCreateUserModal()" style="background: none; border: none; font-size: 16px; cursor: pointer; color: #9ca3af;">✕</button>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="create">
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label class="form-label">Tên đăng nhập (Username) (*)</label>
+                    <input type="text" name="username" class="form-control" placeholder="Ví dụ: thukho_danang" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Mật khẩu ban đầu (*)</label>
+                    <input type="password" name="password" class="form-control" placeholder="Mật khẩu ít nhất 6 ký tự" required minlength="6">
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label class="form-label">Họ và tên người dùng (*)</label>
+                    <input type="text" name="full_name" class="form-control" placeholder="Ví dụ: Lê Thị Hoa" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Số điện thoại</label>
+                    <input type="text" name="phone" class="form-control" placeholder="Ví dụ: 0987654321">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Phân quyền vai trò (Role) (*)</label>
+                <select name="role" class="form-select" required>
+                    <option value="STAFF">👷 Nhân viên kho (ROLE_STAFF) - Nhập, xuất theo lệnh, kiểm kê</option>
+                    <option value="WAREHOUSE_MANAGER" selected>📦 Thủ kho (ROLE_WAREHOUSE_MANAGER) - Quản lý lô, duyệt xuất FEFO</option>
+                    <option value="ADMIN">🛡 Quản trị viên (ROLE_ADMIN) - Toàn quyền cấu hình & quản trị</option>
+                    <option value="CUSTOMER">🛒 Khách hàng / Đại lý sỉ (ROLE_CUSTOMER) - Đặt hàng trực tuyến</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Địa chỉ làm việc / Giao hàng</label>
+                <input type="text" name="address" class="form-control" placeholder="Địa chỉ chi nhánh hoặc địa chỉ kho...">
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                <button type="button" class="btn btn-outline" onclick="closeCreateUserModal()">Hủy bỏ</button>
+                <button type="submit" class="btn btn-success" style="padding: 9px 20px;">Lưu tài khoản</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL 2: THAY ĐỔI VAI TRÒ (ROLE) -->
+<div id="changeRoleModal" style="display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); align-items: center; justify-content: center;">
+    <div style="background: #ffffff; border-radius: 14px; width: 90%; max-width: 440px; padding: 25px; box-shadow: 0 20px 40px rgba(0,0,0,0.25);">
+        <h3 style="margin: 0 0 10px; font-size: 16px; font-weight: 800; color: #1f2937;">
+            🔄 Thay Đổi Vai Trò Cho: <span id="roleModalUsername" style="color: #258451;"></span>
+        </h3>
+        <p style="font-size: 11px; color: #6b7280; margin: 0 0 16px;">
+            Khi thay đổi vai trò, quyền hạn truy cập các chức năng của tài khoản này sẽ được cập nhật ngay lập tức.
+        </p>
+
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="update_role">
+            <input type="hidden" name="user_id" id="roleModalUserId">
+
+            <div class="form-group">
+                <label class="form-label">Chọn vai trò mới:</label>
+                <select name="role" id="roleModalSelect" class="form-select" required>
+                    <option value="ADMIN">🛡 Quản trị viên (ROLE_ADMIN) - Toàn quyền</option>
+                    <option value="WAREHOUSE_MANAGER">📦 Thủ kho (ROLE_WAREHOUSE_MANAGER) - Quản lý kho & FEFO</option>
+                    <option value="STAFF">👷 Nhân viên kho (ROLE_STAFF) - Vận hành kho</option>
+                    <option value="CUSTOMER">🛒 Khách hàng / Đại lý sỉ (ROLE_CUSTOMER) - Đặt hàng</option>
+                </select>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                <button type="button" class="btn btn-outline" onclick="closeRoleModal()">Hủy</button>
+                <button type="submit" class="btn btn-primary" style="padding: 9px 20px;">Cập nhật vai trò</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL 3: ĐẶT LẠI MẬT KHẨU -->
+<div id="resetPwdModal" style="display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); align-items: center; justify-content: center;">
+    <div style="background: #ffffff; border-radius: 14px; width: 90%; max-width: 440px; padding: 25px; box-shadow: 0 20px 40px rgba(0,0,0,0.25);">
+        <h3 style="margin: 0 0 10px; font-size: 16px; font-weight: 800; color: #1f2937;">
+            🔑 Đặt Lại Mật Khẩu Cho: <span id="pwdModalUsername" style="color: #dc2626;"></span>
+        </h3>
+        <p style="font-size: 11px; color: #6b7280; margin: 0 0 16px;">
+            Nhập mật khẩu mới cho người dùng này. Người dùng có thể sử dụng mật khẩu mới này để đăng nhập ngay.
+        </p>
+
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="reset_password">
+            <input type="hidden" name="user_id" id="pwdModalUserId">
+
+            <div class="form-group">
+                <label class="form-label">Mật khẩu mới (tối thiểu 6 ký tự) (*):</label>
+                <input type="password" name="new_password" class="form-control" placeholder="Nhập mật khẩu mới..." required minlength="6">
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                <button type="button" class="btn btn-outline" onclick="closeResetPasswordModal()">Hủy</button>
+                <button type="submit" class="btn btn-danger" style="padding: 9px 20px;">Đặt lại mật khẩu</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openCreateUserModal() {
+        document.getElementById('createUserModal').style.display = 'flex';
+    }
+    function closeCreateUserModal() {
+        document.getElementById('createUserModal').style.display = 'none';
+    }
+
+    function openRoleModal(userId, username, currentRole) {
+        document.getElementById('roleModalUserId').value = userId;
+        document.getElementById('roleModalUsername').innerText = username;
+        document.getElementById('roleModalSelect').value = currentRole;
+        document.getElementById('changeRoleModal').style.display = 'flex';
+    }
+    function closeRoleModal() {
+        document.getElementById('changeRoleModal').style.display = 'none';
+    }
+
+    function openResetPasswordModal(userId, username) {
+        document.getElementById('pwdModalUserId').value = userId;
+        document.getElementById('pwdModalUsername').innerText = username;
+        document.getElementById('resetPwdModal').style.display = 'flex';
+    }
+    function closeResetPasswordModal() {
+        document.getElementById('resetPwdModal').style.display = 'none';
+    }
+</script>
+{% endblock %}

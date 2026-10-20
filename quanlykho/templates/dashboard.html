@@ -1,0 +1,338 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}Tổng quan kho nông sản | Nông Sản Xanh{% endblock %}
+{% block nav_dashboard %}active{% endblock %}
+{% block breadcrumb %}Tổng quan kho{% endblock %}
+
+{% block content %}
+<section class="welcome-row">
+    <div>
+        <p class="eyebrow">BẢNG ĐIỀU KHIỂN KHO HÀNG</p>
+        <h1>Tổng quan kho</h1>
+        <p class="subheading">Theo dõi tồn kho, hoạt động nhập xuất và hạn sử dụng nông sản.</p>
+    </div>
+    <div style="display: flex; gap: 10px;">
+        <a href="{% url 'inbound' %}" class="btn btn-success" style="padding: 10px 16px;">
+            <span>＋</span> Tạo phiếu nhập kho
+        </a>
+        <a href="{% url 'outbound' %}" class="btn btn-primary" style="padding: 10px 16px;">
+            <span>⇄</span> Xuất kho FEFO
+        </a>
+        <a href="{% url 'store' %}" class="btn btn-outline" target="_blank" style="padding: 10px 14px;">
+            <span>🛒</span> Cửa hàng đặt mua ↗
+        </a>
+    </div>
+</section>
+
+<!-- THẺ THỐNG KÊ KPI THỰC TẾ -->
+<section class="stats-grid" aria-label="Thống kê kho" style="grid-template-columns: repeat(4, 1fr);">
+    <article class="stat-card">
+        <div class="stat-top">
+            <span>Tổng sản phẩm nông sản</span>
+            <span class="stat-icon green">▦</span>
+        </div>
+        <div class="stat-value">{{ total_products }} <small>sản phẩm</small></div>
+        <div class="stat-foot">
+            <span class="trend positive">Đang quản lý</span>
+            <span>trong kho</span>
+        </div>
+    </article>
+
+    <article class="stat-card">
+        <div class="stat-top">
+            <span>Tổng giá trị tồn kho</span>
+            <span class="stat-icon blue">₫</span>
+        </div>
+        <div class="stat-value" style="font-size: 20px;">
+            {{ total_inventory_value|floatformat:0 }} <small>VNĐ</small>
+        </div>
+        <div class="stat-foot">
+            <span class="trend positive">Theo giá vốn nhập</span>
+            <span>của các lô hiện tại</span>
+        </div>
+    </article>
+
+    <article class="stat-card">
+        <div class="stat-top">
+            <span>Đơn khách mới đặt</span>
+            <span class="stat-icon orange">🛒</span>
+        </div>
+        <div class="stat-value">{{ new_orders_count }} <small>đơn</small></div>
+        <div class="stat-foot">
+            <a href="{% url 'orders' %}" style="color: #2563eb; font-weight: 700; text-decoration: none;">Xem đơn hàng →</a>
+        </div>
+    </article>
+
+    <article class="stat-card" style="border-color: {% if expiring_soon_count > 0 %}#fca5a5{% else %}#edf0ed{% endif %};">
+        <div class="stat-top">
+            <span>Lô hàng sắp hết hạn</span>
+            <span class="stat-icon red">!</span>
+        </div>
+        <div class="stat-value" style="color: {% if expiring_soon_count > 0 %}#dc2626{% else %}inherit{% endif %};">
+            {{ expiring_soon_count|stringformat:"02d" }} <small>lô</small>
+        </div>
+        <div class="stat-foot">
+            <span class="trend warning">Cần ưu tiên FEFO</span>
+            <span>HSD dưới 7 ngày</span>
+        </div>
+    </article>
+</section>
+
+<section class="content-grid dashboard-charts" aria-label="Biểu đồ hoạt động kho" style="grid-template-columns: minmax(0, 1.5fr) minmax(280px, 1fr);">
+    <article class="panel">
+        <div class="panel-heading">
+            <div>
+                <h2>Phiếu nhập và xuất kho</h2>
+                <p>Số phiếu trong sáu tháng gần nhất</p>
+            </div>
+        </div>
+        <div class="chart-legend" aria-hidden="true">
+            <span><i class="legend-in"></i>Nhập kho</span>
+            <span><i class="legend-out"></i>Xuất kho</span>
+        </div>
+        <div class="chart" role="img" aria-label="Biểu đồ số phiếu nhập và xuất theo tháng">
+            <div class="chart-y-axis" aria-hidden="true">
+                <span>{{ max_activity }}</span><span>{{ activity_axis_mid }}</span><span>0</span>
+            </div>
+            <div class="chart-area">
+                <i class="grid-line"></i><i class="grid-line"></i><i class="grid-line"></i><i class="grid-line"></i><i class="grid-line"></i>
+                <div class="bar-groups">
+                    {% for month in monthly_activity %}
+                    <div class="bar-group">
+                        <i class="bar inbound" style="height: {{ month.receipt_height }}%;"></i>
+                        <i class="bar outbound" style="height: {{ month.issue_height }}%;"></i>
+                        <small>{{ month.label }}</small>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <article class="panel">
+        <div class="panel-heading">
+            <div>
+                <h2>Giá trị nhập kho</h2>
+                <p>Giá trị phiếu nhập theo tháng (VNĐ)</p>
+            </div>
+        </div>
+        <div class="value-chart" role="img" aria-label="Biểu đồ giá trị phiếu nhập theo tháng">
+            <i class="value-grid-line"></i><i class="value-grid-line"></i><i class="value-grid-line"></i><i class="value-grid-line"></i>
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+                <polyline points="{{ value_trend_points }}" />
+            </svg>
+            <div class="value-months" aria-hidden="true">
+                {% for month in monthly_activity %}<span>{{ month.label }}</span>{% endfor %}
+            </div>
+        </div>
+    </article>
+</section>
+
+<!-- GRID NỘI DUNG 2 CỘT (RESPONSIVE CHỐNG TRÀN VÀ CẮT CHỮ) -->
+<div class="content-grid" style="grid-template-columns: minmax(0, 1.85fr) minmax(320px, 1fr); gap: 20px;">
+    <!-- CỘT TRÁI: CẢNH BÁO LÔ CẬN HẠN SỬ DỤNG (3 CẤP ĐỘ MÀU) -->
+    <div class="panel" style="overflow: hidden;">
+        <div class="panel-heading">
+            <div>
+                <h2 style="font-size: 13px; font-weight: 800; color: #1f2937; margin-bottom: 4px;">Cảnh báo Hạn Sử Dụng theo Lô hàng (FEFO Matrix)</h2>
+                <p style="font-size: 10px; color: #6b7280; margin: 0;">Hệ thống tự động phân loại mức độ rủi ro để ưu tiên xuất trước theo nguyên tắc FEFO</p>
+            </div>
+            <a href="{% url 'batches' %}" class="btn btn-outline btn-sm">Xem tất cả lô →</a>
+        </div>
+
+        <div style="overflow-x: auto; width: 100%; margin-top: 12px; -webkit-overflow-scrolling: touch;">
+            <table class="data-table" style="width: 100%; min-width: 640px; margin-top: 0;">
+                <thead>
+                    <tr>
+                        <th style="min-width: 100px;">Lô hàng & Vị trí</th>
+                        <th style="min-width: 140px;">Nông sản</th>
+                        <th style="min-width: 80px;">Tồn kho</th>
+                        <th style="min-width: 150px;">Hạn dùng & Đánh giá FEFO</th>
+                        <th style="min-width: 140px; text-align: center;">Thao tác xử lý</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- 1. Mức Khẩn cấp: < 7 ngày (ĐỎ) -->
+                    {% for b in critical_batches %}
+                    <tr style="background: #fff5f5;">
+                        <td>
+                            <strong style="color: #b91c1c; font-size: 11px;">{{ b.batch_code }}</strong>
+                            <div style="font-size: 9px; color: #6b7280; margin-top: 2px;">📍 {{ b.location|default:"Kho chung" }}</div>
+                        </td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                {% if b.product.image_url %}
+                                    <img src="{{ b.product.image_url }}" alt="{{ b.product.name }}" style="width: 34px; height: 34px; border-radius: 6px; object-fit: cover; flex-shrink: 0;">
+                                {% endif %}
+                                <div>
+                                    <a href="{% url 'product_detail' b.product.id %}" style="font-weight: 700; color: #1f2937; text-decoration: none;">{{ b.product.name }}</a>
+                                    <div style="font-size: 9px; color: #6b7280;">Mã: {{ b.product.code }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <strong style="font-size: 12px;">{{ b.qty_current }}</strong> <small>{{ b.product.unit }}</small>
+                        </td>
+                        <td>
+                            <div style="font-weight: 700; color: #dc2626; font-size: 11px;">HSD: {{ b.exp_date|date:"d/m/Y" }}</div>
+                            <span class="badge badge-critical" style="margin-top: 3px; display: inline-block;">🔴 Cận hạn (còn {{ b.days_to_expiry }} ngày)</span>
+                        </td>
+                        <td style="text-align: center; white-space: nowrap;">
+                            <a href="{% url 'outbound' %}?product_id={{ b.product.id }}" class="btn btn-sm btn-danger" style="padding: 6px 10px; font-weight: 700;">
+                                ⚡ Xuất FEFO
+                            </a>
+                            <a href="{% url 'barcode_label' b.id %}" target="_blank" class="btn btn-sm btn-outline" style="padding: 6px 8px;" title="In tem barcode">
+                                🏷 In tem
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                    <!-- 2. Mức Cảnh báo: 7 - 15 ngày (VÀNG) -->
+                    {% for b in warning_batches %}
+                    <tr>
+                        <td>
+                            <strong style="font-size: 11px;">{{ b.batch_code }}</strong>
+                            <div style="font-size: 9px; color: #6b7280; margin-top: 2px;">📍 {{ b.location|default:"Kho chung" }}</div>
+                        </td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                {% if b.product.image_url %}
+                                    <img src="{{ b.product.image_url }}" alt="{{ b.product.name }}" style="width: 34px; height: 34px; border-radius: 6px; object-fit: cover; flex-shrink: 0;">
+                                {% endif %}
+                                <div>
+                                    <a href="{% url 'product_detail' b.product.id %}" style="font-weight: 700; color: #1f2937; text-decoration: none;">{{ b.product.name }}</a>
+                                    <div style="font-size: 9px; color: #6b7280;">Mã: {{ b.product.code }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <strong style="font-size: 12px;">{{ b.qty_current }}</strong> <small>{{ b.product.unit }}</small>
+                        </td>
+                        <td>
+                            <div style="font-weight: 700; color: #b45309; font-size: 11px;">HSD: {{ b.exp_date|date:"d/m/Y" }}</div>
+                            <span class="badge badge-warning" style="margin-top: 3px; display: inline-block;">🟡 Cảnh báo (còn {{ b.days_to_expiry }} ngày)</span>
+                        </td>
+                        <td style="text-align: center; white-space: nowrap;">
+                            <a href="{% url 'outbound' %}?product_id={{ b.product.id }}" class="btn btn-sm" style="background: #f59e0b; color: #fff; padding: 6px 10px; font-weight: 700;">
+                                📤 Xuất kho
+                            </a>
+                            <a href="{% url 'barcode_label' b.id %}" target="_blank" class="btn btn-sm btn-outline" style="padding: 6px 8px;" title="In tem barcode">
+                                🏷 In tem
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+
+                    <!-- 3. Mức An toàn: > 15 ngày (XANH) -->
+                    {% for b in safe_batches %}
+                    <tr>
+                        <td>
+                            <span style="font-weight: 600; font-size: 11px;">{{ b.batch_code }}</span>
+                            <div style="font-size: 9px; color: #6b7280; margin-top: 2px;">📍 {{ b.location|default:"Kho chung" }}</div>
+                        </td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                {% if b.product.image_url %}
+                                    <img src="{{ b.product.image_url }}" alt="{{ b.product.name }}" style="width: 34px; height: 34px; border-radius: 6px; object-fit: cover; flex-shrink: 0;">
+                                {% endif %}
+                                <div>
+                                    <a href="{% url 'product_detail' b.product.id %}" style="font-weight: 700; color: #1f2937; text-decoration: none;">{{ b.product.name }}</a>
+                                    <div style="font-size: 9px; color: #6b7280;">Mã: {{ b.product.code }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <strong style="font-size: 12px;">{{ b.qty_current }}</strong> <small>{{ b.product.unit }}</small>
+                        </td>
+                        <td>
+                            <div style="font-weight: 600; color: #374151; font-size: 11px;">HSD: {{ b.exp_date|date:"d/m/Y" }}</div>
+                            <span class="badge badge-safe" style="margin-top: 3px; display: inline-block;">🟢 An toàn ({{ b.days_to_expiry }} ngày)</span>
+                        </td>
+                        <td style="text-align: center; white-space: nowrap;">
+                            <a href="{% url 'barcode_label' b.id %}" target="_blank" class="btn btn-sm btn-outline" style="padding: 6px 12px; font-weight: 600;">
+                                🏷 In tem nhãn
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: #9ca3af; padding: 25px;">
+                            Chưa có lô hàng nào trong kho. Hãy bấm <strong>+ Tạo phiếu nhập kho</strong> để bắt đầu!
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- CỘT PHẢI: CẢNH BÁO TỒN ĐỊNH MỨC VÀ HOẠT ĐỘNG GẦN ĐÂY -->
+    <div>
+        <!-- Cảnh báo tồn dưới định mức an toàn -->
+        <div class="panel" style="margin-bottom: 16px;">
+            <div class="panel-heading">
+                <div>
+                    <h2>Cảnh báo Tồn dưới Ngưỡng</h2>
+                    <p>Sản phẩm cần liên hệ NCC để nhập thêm</p>
+                </div>
+            </div>
+
+            {% for p in low_stock_products %}
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #edf0ed;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        {% if p.image_url %}
+                            <img src="{{ p.image_url }}" alt="{{ p.name }}" style="width: 30px; height: 30px; border-radius: 6px; object-fit: cover;">
+                        {% endif %}
+                        <div>
+                            <strong style="font-size: 11px;">{{ p.name }}</strong>
+                            <div style="font-size: 9px; color: #9ca3af;">Mã: {{ p.code }} | Nhóm: {{ p.category.name }}</div>
+                        </div>
+                    </div>
+                    <div style="text-align: right;">
+                        <span style="font-size: 12px; font-weight: 700; color: #dc2626;">{{ p.total_stock }} {{ p.unit }}</span>
+                        <div style="font-size: 9px; color: #6b7280;">Ngưỡng: {{ p.safety_stock }} {{ p.unit }}</div>
+                    </div>
+                </div>
+            {% empty %}
+                <div style="padding: 15px 0; text-align: center; color: #6b7280; font-size: 11px;">
+                    ✓ Mọi nông sản đều đang đạt mức tồn an toàn.
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Hoạt động nhập/xuất gần đây -->
+        <div class="panel">
+            <div class="panel-heading">
+                <div>
+                    <h2>Giao dịch Kho Mới nhất</h2>
+                    <p>Lịch sử phiếu nhập & xuất vừa tạo</p>
+                </div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+                {% for r in recent_receipts %}
+                    <div style="display: flex; align-items: center; justify-content: space-between; font-size: 11px; padding: 6px 8px; background: #f0fdf4; border-radius: 6px; border: 1px solid #bbf7d0;">
+                        <div>
+                            <span class="badge" style="background: #258451; color: #fff;">NHẬP</span>
+                            <strong>{{ r.code }}</strong> - <small>{{ r.supplier.name }}</small>
+                        </div>
+                        <div>{{ r.total_amount|floatformat:0 }} đ</div>
+                    </div>
+                {% endfor %}
+
+                {% for i in recent_issues %}
+                    <div style="display: flex; align-items: center; justify-content: space-between; font-size: 11px; padding: 6px 8px; background: #eff6ff; border-radius: 6px; border: 1px solid #bfdbfe;">
+                        <div>
+                            <span class="badge" style="background: #2563eb; color: #fff;">XUẤT</span>
+                            <strong>{{ i.code }}</strong> - <small>{{ i.partner.name }}</small>
+                        </div>
+                        <a href="{% url 'issue_detail' i.id %}" class="btn btn-sm btn-outline">Xem phiếu</a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

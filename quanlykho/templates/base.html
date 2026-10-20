@@ -1,0 +1,209 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f7f4">
+    <title>{% block title %}Quản lý Tồn kho Nông sản | Nông Sản Xanh{% endblock %}</title>
+    <link rel="icon" type="image/svg+xml" href="{% static 'core/logo.svg' %}">
+    <link rel="stylesheet" href="{% static 'core/dashboard.css' %}?v=5">
+    <style>
+        /* Bổ sung style cho các tính năng tương tác */
+        a { text-decoration: none; color: inherit; }
+        .main-nav a.nav-item { transition: all .15s ease; cursor: pointer; }
+        .main-nav a.nav-item:hover { background: #f0f7f2; color: var(--green-dark); }
+        .badge { display: inline-block; padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 700; }
+        .badge-admin { background: #fee2e2; color: #dc2626; }
+        .badge-manager { background: #e0f2fe; color: #0284c7; }
+        .badge-staff { background: #fef3c7; color: #d97706; }
+        .badge-public { background: #f3f4f6; color: #6b7280; }
+        
+        .badge-critical { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+        .badge-warning { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+        .badge-safe { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+        .badge-depleted { background: #f3f4f6; color: #9ca3af; }
+
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 8px 14px; border: 1px solid transparent; border-radius: 7px; font-size: 11px; font-weight: 600; cursor: pointer; text-decoration: none; }
+        .btn-success { background: #258451; color: #fff; }
+        .btn-success:hover { background: #1b6840; color: #fff; }
+        .btn-primary { background: #2563eb; color: #fff; }
+        .btn-outline { background: #fff; border-color: #d1d5db; color: #374151; }
+        .btn-outline:hover { background: #f9fafb; border-color: #9ca3af; }
+        .btn-danger { background: #ef4444; color: #fff; }
+        .btn-sm { padding: 4px 8px; font-size: 10px; border-radius: 5px; }
+
+        .data-table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 15px; font-size: 11px; }
+        .data-table th { background: #f8faf8; padding: 10px 12px; font-weight: 700; color: #526056; border-bottom: 2px solid #e5eae6; text-align: left; }
+        .data-table td { padding: 11px 12px; border-bottom: 1px solid #edf0ed; color: #374151; vertical-align: middle; }
+        .data-table tr:hover td { background: #fafcfa; }
+
+        .form-control, .form-select { width: 100%; padding: 8px 11px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 11px; box-sizing: border-box; }
+        .form-control:focus, .form-select:focus { outline: none; border-color: #258451; box-shadow: 0 0 0 2px #25845120; }
+        .form-group { margin-bottom: 14px; }
+        .form-label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 11px; color: #4b5563; }
+
+        .alert-box { padding: 12px 16px; border-radius: 8px; margin-bottom: 18px; font-size: 11px; display: flex; align-items: center; justify-content: space-between; }
+        .alert-box.success { background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; }
+        .alert-box.error { background: #fef2f2; border: 1px solid #fecaca; color: #991b1b; }
+        .alert-box.info { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; }
+
+        .card { background: #fff; border: 1px solid #edf0ed; border-radius: 10px; padding: 20px; box-shadow: 0 2px 7px #233b2b05; margin-bottom: 20px; }
+        .card-title { margin: 0 0 15px; font-size: 13px; font-weight: 700; color: #1f2937; }
+        .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 15px; }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="app-shell">
+        <!-- SIDEBAR CHÍNH -->
+        <aside class="sidebar">
+            <a class="brand" href="{% url 'dashboard' %}" aria-label="Nông Sản Xanh - trang chủ">
+                <img class="brand-mark" src="{% static 'core/logo.svg' %}" alt="">
+                <span class="brand-copy">
+                    <strong>Nông Sản Xanh</strong>
+                    <small>QUẢN LÝ KHO NÔNG SẢN</small>
+                </span>
+            </a>
+
+            <div class="nav-label">MENU VẬN HÀNH KHO</div>
+            <nav class="main-nav" aria-label="Menu chính">
+                <a class="nav-item {% block nav_dashboard %}{% endblock %}" href="{% url 'dashboard' %}" title="Tổng quan kho">
+                    <span class="nav-icon">⌂</span><span>Tổng quan (Dashboard)</span>
+                </a>
+
+                <a class="nav-item {% block nav_products %}{% endblock %}" href="{% url 'products' %}" title="Nông sản và danh mục">
+                    <span class="nav-icon">▦</span><span>Nông sản & Danh mục</span>
+                </a>
+
+                <a class="nav-item {% block nav_inbound %}{% endblock %}" href="{% url 'inbound' %}" title="Nhập kho và tạo lô">
+                    <span class="nav-icon">↓</span><span>Nhập kho & Tạo lô</span>
+                </a>
+
+                <a class="nav-item {% block nav_batches %}{% endblock %}" href="{% url 'batches' %}" title="Lô hàng và tem mã vạch">
+                    <span class="nav-icon">🏷</span><span>Lô hàng & Tem mã vạch</span>
+                </a>
+
+                <a class="nav-item {% block nav_outbound %}{% endblock %}" href="{% url 'outbound' %}" title="Xuất kho FEFO">
+                    <span class="nav-icon">⇄</span><span>Xuất kho FEFO</span>
+                </a>
+
+                <a class="nav-item {% block nav_audit %}{% endblock %}" href="{% url 'audit' %}" title="Kiểm kê và hao hụt">
+                    <span class="nav-icon">📋</span><span>Kiểm kê & Hao hụt</span>
+                </a>
+
+                <a class="nav-item {% block nav_partners %}{% endblock %}" href="{% url 'partners' %}" title="Nhà cung cấp và khách hàng">
+                    <span class="nav-icon">🤝</span><span>Nhà cung cấp & Khách hàng</span>
+                </a>
+
+                <a class="nav-item" href="{% url 'orders' %}" title="Đơn khách đặt">
+                    <span class="nav-icon">🛒</span><span>Đơn khách đặt</span>
+                </a>
+
+                {% if role == 'ADMIN' or role == 'WAREHOUSE_MANAGER' %}
+                <a class="nav-item {% block nav_reports %}{% endblock %}" href="{% url 'reports' %}" title="Báo cáo và thống kê">
+                    <span class="nav-icon">▤</span><span>Báo cáo & Thống kê</span>
+                </a>
+                {% endif %}
+
+                {% if role == 'ADMIN' %}
+                <a class="nav-item {% block nav_users %}{% endblock %}" href="{% url 'users' %}" title="Phân quyền tài khoản">
+                    <span class="nav-icon">⚙</span><span>Phân quyền tài khoản</span>
+                </a>
+                {% endif %}
+
+                {% if user.is_authenticated %}
+                <a class="nav-item {% block nav_profile %}{% endblock %}" href="{% url 'profile' %}" title="Hồ sơ người dùng">
+                    <span class="nav-icon">👤</span><span>Hồ sơ người dùng</span>
+                </a>
+                {% endif %}
+
+                <a class="nav-item" href="{% url 'store' %}" target="_blank" title="Cửa hàng nông sản" style="color: var(--green); font-weight: 700;">
+                    <span class="nav-icon">🌿</span><span>Cửa hàng nông sản ↗</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <div class="profile" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        {% if user.is_authenticated %}
+                            <span class="avatar">{{ user.username|slice:":2"|upper }}</span>
+                            <div class="profile-copy">
+                                <strong>{{ user.username }}</strong>
+                                {% if role == 'ADMIN' %}
+                                    <span class="badge badge-admin">Quản trị viên (ADMIN)</span>
+                                {% elif role == 'WAREHOUSE_MANAGER' %}
+                                    <span class="badge badge-manager">Thủ kho (MANAGER)</span>
+                                {% elif role == 'STAFF' %}
+                                    <span class="badge badge-staff">Nhân viên kho (STAFF)</span>
+                                {% elif role == 'CUSTOMER' %}
+                                    <span class="badge" style="background: #e0f2fe; color: #0369a1;">Khách hàng / Đại lý</span>
+                                {% else %}
+                                    <span class="badge badge-public">Khách vãng lai</span>
+                                {% endif %}
+                            </div>
+
+                        {% else %}
+                            <span class="avatar">KH</span>
+                            <div class="profile-copy">
+                                <strong>Khách vãng lai</strong>
+                                <span class="badge badge-public">Chưa đăng nhập</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div style="display: flex; gap: 6px; margin-top: 5px;">
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'profile' %}" class="btn btn-outline btn-sm" style="flex: 1; text-align: center;">👤 Hồ sơ</a>
+                            <a href="{% url 'logout' %}" class="btn btn-outline btn-sm" style="flex: 1; text-align: center; color: #dc2626;">Đăng xuất</a>
+                        {% else %}
+                            <a href="{% url 'login' %}" class="btn btn-success btn-sm" style="flex: 1; text-align: center;">Đăng nhập</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+            <header class="topbar">
+                <div class="breadcrumb">
+                    <span>Trang chủ</span>
+                    <span class="crumb-separator">/</span>
+                    <strong>{% block breadcrumb %}Tổng quan{% endblock %}</strong>
+                </div>
+                <div class="topbar-actions">
+                    <span class="demo-badge">
+                        <span></span> Hệ thống đã kết nối CSDL thực tế
+                    </span>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'profile' %}" style="display: flex; align-items: center; gap: 7px; text-decoration: none; font-size: 11px; color: #374151;">
+                            <span class="avatar" style="width: 26px; height: 26px; font-size: 9px;">{{ user.username|slice:":2"|upper }}</span>
+                            <span><strong>{{ user.username }}</strong> ({{ role }})</span>
+                        </a>
+                        <a href="{% url 'profile' %}" class="btn btn-outline btn-sm">⚙ Hồ sơ cá nhân</a>
+                        <a href="{% url 'logout' %}" class="btn btn-outline btn-sm" style="color: #dc2626;">Thoát</a>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-success btn-sm">Đăng nhập tài khoản</a>
+                    {% endif %}
+                </div>
+            </header>
+
+            <div class="page-content">
+                <!-- Thông báo hệ thống messages -->
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert-box {% if message.tags == 'error' %}error{% elif message.tags == 'success' %}success{% else %}info{% endif %}">
+                            <span>{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

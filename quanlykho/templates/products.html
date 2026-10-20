@@ -1,0 +1,330 @@
+{% extends 'base.html' %}
+
+{% block title %}Danh mục Nông sản & Cơ sở nhập | Nông Sản Xanh{% endblock %}
+{% block nav_products %}active{% endblock %}
+{% block breadcrumb %}Quản lý Nông sản & Danh mục{% endblock %}
+
+{% block content %}
+<div class="page-heading" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+    <div>
+        <p class="eyebrow">QUẢN LÝ DANH MỤC NÔNG SẢN THỰC TẾ</p>
+        <h1 style="font-size: 22px; font-weight: 800; margin: 0 0 4px;">Quản lý Nông sản</h1>
+        <p style="margin: 0; color: #6b7280; font-size: 11px;">Quản lý mã hàng, vùng trồng, tiêu chuẩn chất lượng VietGAP, nhà cung cấp và tồn an toàn</p>
+    </div>
+    {% if role == 'ADMIN' or role == 'WAREHOUSE_MANAGER' %}
+    <button type="button" class="btn btn-success" onclick="toggleAddModal()" style="padding: 10px 18px; font-size: 12px; font-weight: 700;">
+        <span>＋</span> Thêm nông sản mới đầy đủ
+    </button>
+    {% endif %}
+</div>
+
+<section class="stats-grid product-stats" aria-label="Thống kê danh mục">
+    <article class="stat-card">
+        <div class="stat-top"><span>Nông sản đang quản lý</span><span class="stat-icon green">▦</span></div>
+        <div class="stat-value">{{ product_count }} <small>sản phẩm</small></div>
+        <div class="stat-foot"><span class="trend positive">Danh mục hoạt động</span></div>
+    </article>
+    <article class="stat-card">
+        <div class="stat-top"><span>Nhóm nông sản</span><span class="stat-icon blue">◇</span></div>
+        <div class="stat-value">{{ category_count }} <small>nhóm</small></div>
+        <div class="stat-foot"><span>Phân loại sản phẩm</span></div>
+    </article>
+    <article class="stat-card">
+        <div class="stat-top"><span>Cơ sở cung cấp</span><span class="stat-icon orange">♧</span></div>
+        <div class="stat-value">{{ supplier_count }} <small>đối tác</small></div>
+        <div class="stat-foot"><span>Nhà cung cấp và nông trại</span></div>
+    </article>
+</section>
+
+<!-- THANH TÌM KIẾM ĐƯỢC LÀM LẠI HIỆN ĐẠI & THẨM MỸ -->
+<div class="card" style="padding: 16px 20px; margin-bottom: 22px;">
+    <form method="GET" style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+        <div style="position: relative; flex: 1; min-width: 260px;">
+            <span style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: 14px;">🔍</span>
+            <input type="text" name="q" value="{{ q }}" class="form-control" placeholder="Tìm theo mã, tên nông sản, vùng trồng..." style="padding-left: 38px; border-radius: 20px; font-size: 12px;">
+            {% if q %}
+            <a href="{% url 'products' %}{% if cat_id %}?category={{ cat_id }}{% endif %}" style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: #9ca3af; text-decoration: none; font-weight: bold;">✕</a>
+            {% endif %}
+        </div>
+
+        <div style="width: 220px;">
+            <select name="category" class="form-select" onchange="this.form.submit()" style="border-radius: 20px; font-size: 12px;">
+                <option value="">-- Tất cả nhóm hàng --</option>
+                {% for c in categories %}
+                    <option value="{{ c.id }}" {% if cat_id == c.id|stringformat:"s" %}selected{% endif %}>
+                        {{ c.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="padding: 9px 20px; border-radius: 20px; font-weight: 700;">
+            <span>🔍</span> Tìm kiếm
+        </button>
+
+        {% if q or cat_id %}
+            <a href="{% url 'products' %}" class="btn btn-outline" style="color: #ef4444; border-radius: 20px;">
+                ✕ Bỏ lọc
+            </a>
+        {% endif %}
+    </form>
+</div>
+
+<!-- FORM THÊM MỚI NÔNG SẢN ĐẦY ĐỦ TỪ HÌNH ẢNH ĐẾN CƠ SỞ NHẬP (MODAL) -->
+{% if role == 'ADMIN' or role == 'WAREHOUSE_MANAGER' %}
+<div id="addModal" class="card" style="display: none; border: 2px solid #258451; background: #fafdfb; padding: 25px; margin-bottom: 25px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; border-bottom: 1px solid #dcfce7; padding-bottom: 12px;">
+        <div>
+            <h3 class="card-title" style="margin: 0; color: #1b6840; font-size: 16px;">
+                🌱 Thêm Mới Nông Sản Đầy Đủ (Hình ảnh, Cơ sở nhập & Vùng trồng)
+            </h3>
+            <p style="margin: 3px 0 0; font-size: 11px; color: #6b7280;">Hệ thống lưu trữ đầy đủ hồ sơ nguồn gốc để phục vụ truy xuất nguồn gốc và xuất kho FEFO</p>
+        </div>
+        <button type="button" class="btn btn-outline btn-sm" onclick="toggleAddModal()">✕ Đóng form</button>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div style="display: grid; grid-template-columns: 280px 1fr; gap: 24px; align-items: start;">
+            <!-- CỘT TRÁI: LIVE IMAGE PREVIEW -->
+            <div>
+                <label class="form-label">Xem trước hình ảnh nông sản</label>
+                <div id="imagePreviewBox" style="width: 100%; height: 210px; border-radius: 10px; border: 2px dashed #bbf7d0; background: #f0fdf4; display: grid; place-items: center; overflow: hidden; position: relative;">
+                    <img id="previewImg" src="" alt="Xem trước" style="display: none; width: 100%; height: 100%; object-fit: cover;">
+                    <div id="previewPlaceholder" style="text-align: center; color: #15803d; font-size: 11px; padding: 20px;">
+                        <span style="font-size: 32px; display: block; margin-bottom: 8px;">📷</span>
+                        Dán link URL hình ảnh vào ô bên cạnh để xem trước ảnh trực tiếp
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 12px;">
+                    <label class="form-label">Đường dẫn hình ảnh (Image URL) (*)</label>
+                    <input type="url" name="image_url" id="imageUrlInput" class="form-control" placeholder="https://images.unsplash.com/..." oninput="updateImagePreview(this.value)">
+                </div>
+            </div>
+
+            <!-- CỘT PHẢI: CÁC TRƯỜNG THÔNG TIN CHI TIẾT -->
+            <div>
+                <!-- HÀNG 1: MÃ, TÊN, NHÓM -->
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label class="form-label">Mã nông sản (*)</label>
+                        <input type="text" name="code" class="form-control" placeholder="Ví dụ: NS-MAN-HA" required style="font-weight: 700; text-transform: uppercase;">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tên nông sản (*)</label>
+                        <input type="text" name="name" class="form-control" placeholder="Ví dụ: Mận hậu Mộc Châu Sơn La" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nhóm nông sản (*)</label>
+                        <select name="category_id" class="form-select" required>
+                            {% for c in categories %}
+                                <option value="{{ c.id }}">{{ c.name }} ({{ c.get_storage_type_display }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <!-- HÀNG 2: CƠ SỞ NHẬP, VÙNG TRỒNG, TIÊU CHUẨN CHẤT LƯỢNG -->
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label class="form-label">Cơ sở nhập / Nhà cung cấp (*)</label>
+                        <select name="supplier_id" class="form-select">
+                            <option value="">-- Chọn Nhà cung cấp / HTX --</option>
+                            {% for s in suppliers %}
+                                <option value="{{ s.id }}">{{ s.name }} ({{ s.address }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Vùng trồng / Xuất xứ</label>
+                        <input type="text" name="origin" class="form-control" placeholder="Ví dụ: Mộc Châu - Sơn La" value="Việt Nam">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tiêu chuẩn chất lượng</label>
+                        <input type="text" name="quality_standard" class="form-control" placeholder="Ví dụ: VietGAP, GlobalGAP, OCOP 4 sao" value="VietGAP">
+                    </div>
+                </div>
+
+                <!-- HÀNG 3: MÙA VỤ, ĐƠN VỊ, TỒN AN TOÀN -->
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label class="form-label">Gợi ý Mùa vụ</label>
+                        <select name="season" class="form-select">
+                            {% for val, label in seasons %}
+                                <option value="{{ val }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Đơn vị tính</label>
+                        <input type="text" name="unit" class="form-control" value="kg" placeholder="kg, thùng, bó, sọt" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Ngưỡng tồn an toàn</label>
+                        <input type="number" step="0.1" name="safety_stock" class="form-control" value="50" required>
+                    </div>
+                </div>
+
+                <!-- HÀNG 4: BẢO QUẢN, CHIẾN LƯỢC, GIÁ -->
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label class="form-label">Nhiệt độ & Điều kiện bảo quản</label>
+                        <input type="text" name="storage_temp" class="form-control" value="2°C - 8°C (Kho mát)">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Chiến lược xuất kho</label>
+                        <select name="strategy" class="form-select">
+                            <option value="FEFO">FEFO (Hạn dùng gần nhất xuất trước)</option>
+                            <option value="FIFO">FIFO (Nhập trước xuất trước)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Giá bán lẻ niêm yết (VNĐ)</label>
+                        <input type="number" name="price" class="form-control" value="45000">
+                    </div>
+                </div>
+
+                <!-- HÀNG 5: MÔ TẢ CHI TIẾT SẢN PHẨM -->
+                <div class="form-group">
+                    <label class="form-label">Mô tả sản phẩm & Hướng dẫn bảo quản</label>
+                    <textarea name="description" rows="2" class="form-control" placeholder="Mô tả đặc điểm quả, độ ngọt, hướng dẫn nhiệt độ bảo quản trong kho lạnh..."></textarea>
+                </div>
+
+                <div style="text-align: right; margin-top: 15px;">
+                    <button type="submit" class="btn btn-success" style="padding: 10px 24px; font-size: 13px; font-weight: 700;">
+                        <span>💾</span> Lưu nông sản vào CSDL
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endif %}
+
+<!-- BẢNG DANH MỤC NÔNG SẢN VỚI THÔNG TIN ĐẦY ĐỦ VÀ CHI TIẾT -->
+<div class="card product-table-card" style="padding: 0; overflow: hidden;">
+    <div class="table-heading">
+        <div>
+            <strong>Danh sách nông sản</strong>
+            <span>{{ products|length }} mặt hàng</span>
+        </div>
+        <span>Thông tin tồn kho và cơ sở cung cấp</span>
+    </div>
+    <div style="overflow-x: auto; width: 100%;">
+        <table class="data-table" style="margin-top: 0;">
+            <thead>
+                <tr>
+                    <th style="min-width: 180px;">Nông sản</th>
+                    <th style="min-width: 140px;">Vùng trồng & Tiêu chuẩn</th>
+                    <th style="min-width: 150px;">Cơ sở nhập</th>
+                    <th style="min-width: 130px;">Nhóm & Điều kiện</th>
+                    <th style="min-width: 100px;">Tồn khả dụng</th>
+                    <th style="min-width: 90px;">Giá niêm yết</th>
+                    <th style="min-width: 140px; text-align: center;">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in products %}
+                <tr>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            {% if p.image_url %}
+                                <img src="{{ p.image_url }}" alt="{{ p.name }}" style="width: 44px; height: 44px; border-radius: 8px; object-fit: cover; flex-shrink: 0; border: 1px solid #edf0ed;">
+                            {% else %}
+                                <div style="width: 44px; height: 44px; border-radius: 8px; background: #eaf5ed; color: #258451; display: grid; place-items: center; font-size: 11px; flex-shrink: 0;">
+                                    🌾
+                                </div>
+                            {% endif %}
+                            <div>
+                                <a href="{% url 'product_detail' p.id %}" style="font-weight: 800; color: #1f2937; text-decoration: none; font-size: 12px;">
+                                    {{ p.name }}
+                                </a>
+                                <div style="font-size: 9px; color: #6b7280; margin-top: 2px;">
+                                    Mã: <strong>{{ p.code }}</strong> | ĐVT: {{ p.unit }}
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div style="font-weight: 700; color: #374151; font-size: 11px;">📍 {{ p.origin|default:"Việt Nam" }}</div>
+                        <span class="badge" style="background: #eaf5ed; color: #166534; font-size: 9px; margin-top: 3px;">
+                            ✓ {{ p.quality_standard|default:"VietGAP" }}
+                        </span>
+                    </td>
+                    <td>
+                        <div style="font-weight: 600; color: #1f2937; font-size: 11px;">
+                            {{ p.supplier.name|default:"(Chưa liên kết)" }}
+                        </div>
+                        {% if p.supplier.phone %}
+                            <div style="font-size: 9px; color: #6b7280;">SĐT: {{ p.supplier.phone }}</div>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="badge" style="background: #eff6ff; color: #1e40af;">{{ p.category.name }}</span>
+                        <div style="font-size: 9px; color: #6b7280; margin-top: 2px;">❄️ {{ p.storage_temp }}</div>
+                    </td>
+                    <td>
+                        {% if p.is_low_stock %}
+                            <span style="color: #dc2626; font-weight: 700; font-size: 12px;">⚠ {{ p.total_stock }} {{ p.unit }}</span>
+                            <div style="font-size: 9px; color: #dc2626;">Dưới ngưỡng ({{ p.safety_stock }})</div>
+                        {% else %}
+                            <span style="color: #15803d; font-weight: 700; font-size: 12px;">✓ {{ p.total_stock }} {{ p.unit }}</span>
+                            <div style="font-size: 9px; color: #6b7280;">Ngưỡng: {{ p.safety_stock }}</div>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <strong style="color: #258451; font-size: 12px;">{{ p.price|floatformat:0 }} đ</strong>
+                        <div style="font-size: 9px; color: #6b7280;">/ {{ p.unit }}</div>
+                    </td>
+                    <td style="text-align: center; white-space: nowrap;">
+                        <a href="{% url 'product_detail' p.id %}" class="btn btn-sm btn-outline" style="font-weight: 700;">
+                            👁 Chi tiết
+                        </a>
+                        <a href="{% url 'outbound' %}?product_id={{ p.id }}" class="btn btn-sm btn-primary" style="font-weight: 700;">
+                            ⇄ Xuất FEFO
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" style="text-align: center; padding: 35px; color: #9ca3af;">
+                        Không tìm thấy nông sản nào phù hợp. Hãy nhấn <strong>+ Thêm nông sản mới</strong> để tạo!
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function toggleAddModal() {
+        const modal = document.getElementById('addModal');
+        modal.style.display = (modal.style.display === 'none' || modal.style.display === '') ? 'block' : 'none';
+        if (modal.style.display === 'block') {
+            modal.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
+    function updateImagePreview(url) {
+        const img = document.getElementById('previewImg');
+        const placeholder = document.getElementById('previewPlaceholder');
+        if (url && url.trim().length > 10) {
+            img.src = url;
+            img.style.display = 'block';
+            placeholder.style.display = 'none';
+            img.onerror = function() {
+                img.style.display = 'none';
+                placeholder.style.display = 'block';
+                placeholder.innerHTML = '<span style="font-size: 28px; color: #dc2626;">✕</span><br>Không tải được ảnh từ URL này!';
+            };
+        } else {
+            img.style.display = 'none';
+            placeholder.style.display = 'block';
+            placeholder.innerHTML = '<span style="font-size: 32px; display: block; margin-bottom: 8px;">📷</span>Dán link URL hình ảnh vào ô bên cạnh để xem trước';
+        }
+    }
+</script>
+{% endblock %}

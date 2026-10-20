@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block title %}Kiểm Kê Kho & Ghi Nhận Hao Hụt | Nông Sản Xanh{% endblock %}
+{% block nav_audit %}active{% endblock %}
+{% block breadcrumb %}Kiểm kê & Ghi nhận Hao hụt nông sản{% endblock %}
+
+{% block content %}
+<div class="page-heading" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+    <div>
+        <p class="eyebrow">THEO DÕI CHÊNH LỆCH TỒN KHO</p>
+        <h1 style="font-size: 20px; font-weight: 800; margin: 0 0 4px;">Kiểm kê & Hao hụt</h1>
+        <p style="margin: 0; color: #6b7280; font-size: 11px;">Ghi nhận chênh lệch số lượng thực tế ngoài kho và nguyên nhân hao hụt (dập nát, thối hỏng, quá hạn)</p>
+    </div>
+</div>
+
+<div class="content-grid operation-layout" style="grid-template-columns: minmax(0, 1.4fr) minmax(320px, 1fr);">
+    <!-- FORM GHI NHẬN HAO HỤT / HƯ HỎNG -->
+    <div class="card">
+        <h2 class="card-title" style="color: #dc2626;">⚠ Ghi Nhận Nông Sản Hao Hụt / Hư Hỏng</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="form_type" value="waste">
+
+            <div class="form-group">
+                <label class="form-label">Chọn Lô hàng phát sinh hao hụt (*)</label>
+                <select name="batch_id" class="form-select" required>
+                    <option value="">-- Chọn Lô hàng --</option>
+                    {% for b in batches %}
+                        <option value="{{ b.id }}">
+                            {{ b.batch_code }} - {{ b.product.name }} (Đang tồn: {{ b.qty_current }} {{ b.product.unit }} | Vị trí: {{ b.location|default:"Kho" }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label class="form-label">Số lượng hao hụt / hư hỏng (*)</label>
+                    <input type="number" step="0.1" name="quantity" class="form-control" placeholder="Ví dụ: 5.5" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Nguyên nhân hao hụt (*)</label>
+                    <select name="reason" class="form-select" required>
+                        {% for r_code, r_name in reasons %}
+                            <option value="{{ r_code }}">{{ r_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Mô tả chi tiết / Biện pháp xử lý</label>
+                <input type="text" name="note" class="form-control" placeholder="Ví dụ: Dập nát 5kg do va quẹt khi xếp dỡ xe tải...">
+            </div>
+
+            <div style="text-align: right; margin-top: 15px;">
+                <button type="submit" class="btn btn-danger" style="padding: 10px 20px;">
+                    ✔ Ghi nhận Hao hụt & Trừ tồn kho ngay
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- HƯỚNG DẪN QUY CHUẨN KIỂM KÊ -->
+    <div>
+        <div class="card" style="border-left: 4px solid #dc2626;">
+            <h3 class="card-title">📋 Quy Chuẩn Kiểm Kê Nông Sản</h3>
+            <ul style="font-size: 11px; color: #4b5563; padding-left: 18px; line-height: 1.8; margin: 0;">
+                <li>Nông sản có đặc tính sinh học bốc thoát hơi nước và giảm trọng lượng tự nhiên theo thời gian lưu kho.</li>
+                <li>Mọi số lượng hao hụt phải được phân loại nguyên nhân chính xác: <strong>Dập nát cơ học</strong>, <strong>Thối hỏng vi sinh</strong> hoặc <strong>Quá hạn sử dụng</strong>.</li>
+                <li>Hệ thống sẽ tự động cập nhật số lượng tồn kho của Lô về đúng số lượng khả dụng thực tế.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- BẢNG LỊCH SỬ CÁC BIÊN BẢN GHI NHẬN HAO HỤT -->
+<div class="card" style="margin-top: 10px;">
+    <h3 class="card-title">Nhật Ký Hao Hụt & Tiêu Hủy Nông Sản Gần Đây</h3>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Mã Biên bản</th>
+                <th>Lô Hàng</th>
+                <th>Tên Nông sản</th>
+                <th>Ngày ghi nhận</th>
+                <th>Số lượng hao hụt</th>
+                <th>Lý do hao hụt</th>
+                <th>Người ghi nhận</th>
+                <th>Ghi chú</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for w in waste_reports %}
+            <tr>
+                <td><strong style="color: #dc2626;">{{ w.code }}</strong></td>
+                <td><strong>{{ w.batch.batch_code }}</strong></td>
+                <td>{{ w.batch.product.name }}</td>
+                <td>{{ w.report_date|date:"d/m/Y" }}</td>
+                <td><strong style="color: #dc2626;">{{ w.quantity }} {{ w.batch.product.unit }}</strong></td>
+                <td><span class="badge badge-warning">{{ w.get_reason_display }}</span></td>
+                <td><small>{{ w.reported_by.username|default:"Thủ kho" }}</small></td>
+                <td>{{ w.note|default:"--" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" style="text-align: center; color: #9ca3af; padding: 20px;">
+                    Chưa có ghi nhận hao hụt nào. Tồn kho đang được bảo quản tốt!
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
